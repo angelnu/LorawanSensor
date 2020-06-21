@@ -90,9 +90,8 @@ appeui = <your app EUI>
 If you run without creating the file first then the programmer will create a dummy APPEUI which you will need to modify. You can keep the config folder into its own git repository. Please keep it private!
 
 For programming either use the platformio UI or any of the following CLI commands:
-- `pio run -t upload -e soilsensor_v2_L4` - PCB v2, STM32 L4 128 KB
-- `pio run -t upload -e soilsensor_v2_L4s` - PCB v2, STM32 L4 64 KB
-- `pio run -t upload -e soilsensor_v1_L4` - PCB v1, STM32 L4 128 KB
+- `pio run -t upload -e soilsensor_v2_L4` - PCB v2, STM32 L4
+- `pio run -t upload -e soilsensor_v1_L4` - PCB v1, STM32 L4
 - `pio run -t upload -e soilsensor_v1_L0` - PCB v1, STM32 L0
 
 If you connect a serial interface while booting you should should see the following:
