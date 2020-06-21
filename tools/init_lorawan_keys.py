@@ -28,12 +28,14 @@ class lorawan_device:
     def __init__(self,
                  name,
                  uid_addr,
+                 eeprom_address,
                  optionbytes = {},
                  flash_base=DEFAULT_FLASH_BASE,
                  flash_page_size=DEFAULT_FLASH_PAGE_SIZE):
         super().__init__()
         self.__name = name
         self.__uid_addr = uid_addr
+        self.__eeprom_address = eeprom_address
         self.__optionbytes = optionbytes
         self.__flash_base = flash_base
         self.__flash_page_size = flash_page_size
@@ -153,12 +155,40 @@ class lorawan_device:
                 print("ERROR3: \n"+e.output)
                 sys.exit(-3)
 
+    def write_eeprom(self, address, data):
+
+        #First read page we are going to modify
+        old_data = self.read_data(address, len(data))
+        if (data == old_data):
+            print("data at "+hex(address)+" unchanged -> skipping write")
+            return
+        else:
+            print("OLD DATA: "+old_data.hex())
+            print("NEW DATA: "+data.hex())
+
+        with tempfile.NamedTemporaryFile(suffix=".bin") as fp:
+            fp.write(data)
+            fp.flush()
+            WRITE_DATA_CMD = PROGRAMMER + " -w "+fp.name+" "+hex(address)
+            print(WRITE_DATA_CMD, flush=True)
+            
+            try:
+                read_uid_output = subprocess.check_output(WRITE_DATA_CMD.split(" "),universal_newlines=True)
+            except subprocess.CalledProcessError as e:
+                print("ERROR3: \n"+e.output)
+                sys.exit(-3)
+
     def get_uid(self):
         return self.read_data(self.__uid_addr, 12).hex()
 
     def write_struct_data(self, data):
-        struct_address = self.__flash_base + self.__flash_size - self.__flash_page_size
-        self.write_page(struct_address, data)
+        if self.__eeprom_address != 0:
+            #Use EEPROM
+            self.write_eeprom(self.__eeprom_address, data)
+        else:
+            #Use last flash page
+            struct_address = self.__flash_base + self.__flash_size - self.__flash_page_size
+            self.write_page(struct_address, data)
 
 
     def extract_MCU_data(self, programmer_output):
@@ -226,6 +256,8 @@ parser.add_argument('--name', dest='name', default="noname",
                    help='name to be added to '+DEVICES_LIST_FILE)
 parser.add_argument('--uid_address', dest='uid_address', default=str(UID_ADDRESS_L4),
                    help='address in flash for UID')
+parser.add_argument('--eeprom_address', dest='eeprom_address', default=str(0),
+                   help='address in flash for UID')
 parser.add_argument('--optionbytes', dest='optionbytes', default={},
                     action = type('', (argparse.Action, ), dict(__call__ = lambda a, p, n, v, o: getattr(n, a.dest).update(dict([v.split('=')])))),
                     help='Optionbytes to set')
@@ -235,9 +267,11 @@ args = parser.parse_args()
 
 print("name: "+args.name)
 print("uid_address: "+args.uid_address)
+print("eeprom_address: "+args.eeprom_address)
 print("optionbytes: "+str(args.optionbytes))
 
 device = lorawan_device(args.name,
                         uid_addr = int(args.uid_address, 16),
+                        eeprom_address = int(args.eeprom_address, 16),
                         optionbytes = args.optionbytes)
 device.program()
