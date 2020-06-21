@@ -66,6 +66,8 @@ void print_hex_mem(uint8_t *mem, size_t len, bool bigEndian=true) {
 void print_buildinfo() {
     log_info(F("DEVICE VERSION: "));
         log_info_ln(DEVICE_VERSION);
+    log_info(F("DEVICE CONFIG: "));
+        print_hex_mem((uint8_t*)&device_config, sizeof(device_config));
     log_info(F("Device UID: "));
         print_hex_mem((uint8_t*)UID_BASE, UID_BYTES_LENGTH);
     log_info(F("BUILD DATE: "));

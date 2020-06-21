@@ -1,10 +1,28 @@
 # Soil sensor for LoraWan
 
-This sensor uses a custom PCB to measure soil and send via LoraWan when the value changes enough. It can work on a CR123 battery for 20 years (self-discharge of the battery being the main factor). It sends the battery voltage and (optionally) the temp of the MCU (using factory calibration).
+This sensor uses a custom PCB to measure soil and send via LoraWan when the value changes enough. The design objective were:
+- a sensor that could run without replacing batteries during the life cycle of the device
+- small size
+- easy to build and program (need a 20-30)
+- cost bellow 20€
+- resist the outside weather with an easy to print cage
+
+The sensor can work on a CR123 battery for 20 years (self-discharge of the battery being the main factor). It sends the battery voltage and (optionally) the temp of the MCU (using factory calibration).
 
 For each new detected device it generates unique LoraWan keys and upload them to flash. This way the same firmware can be used for multiple instances of the same board.
 
 Download commands might be used to query or modify the configuration. See the commands section bellow.
+
+## Power cosumption
+
+- sleep: 1.5 uA
+- run: 415 uA at 4 MHz - 20 ms for measurement - 2 seconds waiting for reception
+- Sending; 120 mA during 50 ms
+- Sending each 60 minutes (at least moisture level changess fast - watering, raining)
+- Battery: 1400 mAh
+  
+The above gives a theorical batery life of 47 years without auto-discharge. In reality the auto-discharge effect is expected to be the predominant one defining the live of the device to around 20 years for a good quality battery.
+
 
 ## Bill of Materials
 It can be built for ca 15€ ussing the following parts:
@@ -77,13 +95,22 @@ For programming either use the platformio UI or any of the following CLI command
 - `pio run -t upload -e soilsensor_v1_L4` - PCB v1, STM32 L4 128 KB
 - `pio run -t upload -e soilsensor_v1_L0` - PCB v1, STM32 L0
 
-Unset the IWDG_STOP user congliguration flag to let the device deep sleep without the Watchdog reseting the device. This will be done automatically in the future.
+If you connect a serial interface while booting you should should see the following:
+```
+Settings unchanged
+DEVICE VERSION: 3
+DEVICE CONFIG: 0x02033C00053C64005802010A05FF
+Device UID: 0x3200230006504D3843353720
+BUILD DATE: Jun 21 2020
+BUILD TIME: 18:07:48
+COMMIT ID: e3d1d3b5d34d39d88d90022d6fe365ebce3887b5
+APPEUI: 0x.....
+DEVEUI: 0x....
+Starting
+7579 Sending.. 18248 TX_COMPLETE
+```
 
 ## ToDos
 - Add some pictures
-- keys upload tool
-  - parse target memory instead of requiring parameter
-  - parse option registers
-  - more documentation
 - Firmware OTA update
 
