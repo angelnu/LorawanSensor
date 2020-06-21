@@ -133,17 +133,20 @@ bool sensor_measure(CayenneLPP& lpp){
   //Find if it a value has changed enough
   bool enough_change = false;
 
-  if ((abs(battery_v - old_battery_v) / old_battery_v) >= device_config.min_percentage_v_2_send)
+  if ((abs(battery_v - old_battery_v) / old_battery_v) >= device_config.min_percentage_v_2_send){
     enough_change = true;
-  old_battery_v = battery_v;
+    old_battery_v = battery_v;
+  }
 
-  if ((abs(temp_c - old_temp_c) / old_temp_c) >= device_config.min_percentage_s_2_send)
+  if ((abs(temp_c - old_temp_c) / old_temp_c) >= device_config.min_percentage_s_2_send) {
     enough_change = true;
-  old_temp_c = temp_c;
+    old_temp_c = temp_c;
+  }
 
-  if (abs(soil_p - old_soil_p) >= device_config.min_percentage_s_2_send)
+  if (abs(soil_p - old_soil_p) >= device_config.min_percentage_s_2_send) {
     enough_change = true;
-  old_soil_p = soil_p;
+    old_soil_p = soil_p;
+  }
 
   if (skippedMeasurements >= device_config.max_skiped_measurements)
     enough_change = true;
