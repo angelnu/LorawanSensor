@@ -36,9 +36,29 @@ It can be built for ca 15€ ussing the following parts:
 
 ## Downlink commands
 
-Downlink commands are used to query and/or modify the device settings without having to reprogram the flash.
+Downlink commands are used to query and/or modify the device settings without having to reprogram the flash. Each command uses one byte plus optional data depending on the command. The commands are implemtented in the `lorawan_process_command` at [lorawan.cpp](src/lorawan.cpp#L188)
 
-02033C00053C64005802010A05FF
+Commands will be queued and transferred to the device after the next uplink transfer. Multiple commands can be queued but be carefull not to exceed to the watdown timeout or the device will get reset.
+
+Commands:
+- 0x00 - READ configuration
+  - Description: Returns the configuration of the device. See [device_config_t](src/config.h#L27) for more details on the struct
+  - Additional downlink bytes: none
+  - Example output: 02 03 3C00 05 3C 6400 5802 01 0A 05 FF
+- 0x01 - Reset config to the default
+  - Additional downlink bytes: none
+- 0x02 - Sets the configuration
+  - Additional downlink bytes: config as returned by the 0x00 command
+  - Example input: 02 02033C00053C64005802010A05FF
+- 0x05 - Read Device UID
+  - Additional downlink bytes: none
+  - Output: 12 bytes with STM32 UID
+- 0x06 - Read firmware GIT commit
+  - Additional downlink bytes: none
+  - Output: ASCII string
+- 0x07 - Read firmware BUILD date
+  - Additional downlink bytes: none
+  - Output: ASCII string
 
 ## Firmware
 
@@ -57,7 +77,7 @@ For programming either use the platformio UI or any of the following CLI command
 - `pio run -t upload -e soilsensor_v1_L4` - PCB v1, STM32 L4 128 KB
 - `pio run -t upload -e soilsensor_v1_L0` - PCB v1, STM32 L0
 
-
+Unset the IWDG_STOP user congliguration flag to let the device deep sleep without the Watchdog reseting the device. This will be done automatically in the future.
 
 ## ToDos
 - Add some pictures
