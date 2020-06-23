@@ -6,6 +6,7 @@ This was the first version on STM32. It has multiple debug options so more compl
 
 TBD overview picture
 
+- [Aisler PCB project](https://aisler.net/p/FEKNZTQA)
 - [SoilSensor.sch](SoilSensor.sch)
   - ![Schematics Preview](pictures/SoilSensor%20v1%20Schematics.png)
 - [SoilSensor.kicad_pcb](SoilSensor.kicad_pcb)
@@ -22,6 +23,7 @@ This is the (currently) final version without any unneded HW. It is optimised to
 
 TBD overview picture
 
+- [Aisler PCB project](https://aisler.net/p/DFIQTREA)
 - [SoilSensor.sch](SoilSensor_v2.sch)
   - ![Schematics Preview](pictures/SoilSensor%20v2%20Schematics.png)
 - [SoilSensor.kicad_pcb](SoilSensor_v2.kicad_pcb)
