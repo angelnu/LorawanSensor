@@ -431,32 +431,32 @@ Wire Wire Line
 $Comp
 L power:GND #PWR0111
 U 1 1 5ECE13EE
-P 8900 5700
-F 0 "#PWR0111" H 8900 5450 50  0001 C CNN
-F 1 "GND" H 8905 5527 50  0000 C CNN
-F 2 "" H 8900 5700 50  0001 C CNN
-F 3 "" H 8900 5700 50  0001 C CNN
-	1    8900 5700
+P 8400 5650
+F 0 "#PWR0111" H 8400 5400 50  0001 C CNN
+F 1 "GND" H 8405 5477 50  0000 C CNN
+F 2 "" H 8400 5650 50  0001 C CNN
+F 3 "" H 8400 5650 50  0001 C CNN
+	1    8400 5650
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+3.3V #PWR0112
 U 1 1 5ECE1F3D
-P 8900 5200
-F 0 "#PWR0112" H 8900 5050 50  0001 C CNN
-F 1 "+3.3V" H 9050 5350 50  0000 C CNN
-F 2 "" H 8900 5200 50  0001 C CNN
-F 3 "" H 8900 5200 50  0001 C CNN
-	1    8900 5200
+P 8400 5150
+F 0 "#PWR0112" H 8400 5000 50  0001 C CNN
+F 1 "+3.3V" H 8550 5300 50  0000 C CNN
+F 2 "" H 8400 5150 50  0001 C CNN
+F 3 "" H 8400 5150 50  0001 C CNN
+	1    8400 5150
 	1    0    0    -1  
 $EndComp
-Text GLabel 8900 5600 2    50   Input ~ 0
+Text GLabel 8400 5550 2    50   Input ~ 0
 SWDIO
-Text GLabel 8900 5500 2    50   Input ~ 0
+Text GLabel 8400 5450 2    50   Input ~ 0
 SWCLK
-Text GLabel 8900 5400 2    50   Input ~ 0
+Text GLabel 8400 5350 2    50   Input ~ 0
 TX
-Text GLabel 8900 5300 2    50   Input ~ 0
+Text GLabel 8400 5250 2    50   Input ~ 0
 RX
 $Comp
 L Device:R R1
@@ -603,12 +603,12 @@ $EndComp
 $Comp
 L Connector:Conn_01x06_Male J1
 U 1 1 5ED1FD6B
-P 8700 5400
-F 0 "J1" H 8550 5150 50  0000 C CNN
-F 1 "Conn_01x06_Male" H 8500 5050 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical" H 8700 5400 50  0001 C CNN
-F 3 "~" H 8700 5400 50  0001 C CNN
-	1    8700 5400
+P 8200 5350
+F 0 "J1" H 8050 5100 50  0000 C CNN
+F 1 "Conn_01x06_Male" H 8000 5000 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical" H 8200 5350 50  0001 C CNN
+F 3 "~" H 8200 5350 50  0001 C CNN
+	1    8200 5350
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -626,4 +626,6 @@ Wire Wire Line
 	7300 3400 6350 3400
 Wire Wire Line
 	5250 4250 5250 4300
+Text Notes 6500 4950 0    50   ~ 0
+No firmware for it\nused internal STM32L4 temp sensor
 $EndSCHEMATC
