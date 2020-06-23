@@ -228,7 +228,7 @@ class lorawan_device:
                     if value.lower() in line.lower():
                         print ("Option byte "+option+ " already set to "+value+" -> skipping set")
                     else:
-                        write_optionbytes += " --optionbytes "+value+"="+value
+                        write_optionbytes += " --optionbytes "+option+"="+value
                     break
             else:
                 print("Option "+option+" not found in: \n"+read_optionbytes_output)
@@ -238,6 +238,7 @@ class lorawan_device:
             return #Nothing to change
         
         WRITE_OPTIONBYTES_CMD = PROGRAMMER + " " + write_optionbytes
+        print(WRITE_OPTIONBYTES_CMD)
         try:
             read_optionbytes_output = subprocess.check_output(WRITE_OPTIONBYTES_CMD.split(" "),universal_newlines=True)
         except subprocess.CalledProcessError as e:
@@ -275,3 +276,4 @@ device = lorawan_device(args.name,
                         eeprom_address = int(args.eeprom_address, 16),
                         optionbytes = args.optionbytes)
 device.program()
+print ("Device Lorawan keys loaded")
