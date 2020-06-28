@@ -25,8 +25,8 @@ Devices can be built for ca 10-20€ ussing the following parts:
     - STM32L412K8T6 64K Flash,  8K RAM, LQFP-32 
 - RFM95W (3.5 € via Aliexpress, 3x this price if bought in Europe)
 - RC123a battery and holder (2€ via Aliexpress, 2x this price if bought in Europe)
-- PCB (2-5 € when ordering 12 from [Aisler](https://aisler.net) ) - designs in [KiCad](KiCad) folder and links to PCB from [Aisler](https://aisler.net) in the [documentation folder](docs)
-- 3D-printed box - design in [cages](cage) folder
+- PCB (2-5 € when ordering 12 from [Aisler](https://aisler.net) ) - see [Devices](devices) folder for the sources and the uploaded PCBs to [Aisler](https://aisler.net)
+- 3D-printed boxes - ee [Devices](devices) folder
 - some SMT components (1 €) - see schematics in [KiCad](KiCad) folder
 
 ## Downlink commands
