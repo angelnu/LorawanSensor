@@ -37,7 +37,7 @@ Commands will be queued and transferred to the device after the next uplink tran
 
 Commands:
 - 0x00 - READ configuration
-  - Description: Returns the configuration of the device. See [device_config_t](src/config.h#L27) for more details on the struct
+  - Description: Returns the configuration of the device. See [device_config_t](src/config.h#L23) for more details on the struct
   - Additional downlink bytes: none
   - Example output: 02 03 3C00 05 3C 6400 5802 01 0A 05 FF
 - 0x01 - Reset config to the default

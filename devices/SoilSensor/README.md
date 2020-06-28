@@ -40,8 +40,8 @@ TBD overview picture painted
 - [SoilSensor.sch](KiCad/SoilSensor_v2.sch)
   - ![Schematics Preview](pictures/SoilSensor%20v2%20Schematics.png)
 - [SoilSensor.kicad_pcb](KiCad/SoilSensor_v2.kicad_pcb)
-  - ![PCB Full View](SoilSensor_v2_PCB_full_view.jpg)
-  - ![PCB Close View](SoilSensor_v2_PCB_close_view.jpg)
+  - ![PCB Full View](pictures/SoilSensor_v2_PCB_full_view.jpg)
+  - ![PCB Close View](pictures/SoilSensor_v2_PCB_close_view.jpg)
   - [SVG for soil sonde](pictures/soilSonde.svg)
     - edited with [Inkscape](https://inkscape.org)
     - imported to KiCad with [svg2shenzhen](https://github.com/badgeek/svg2shenzhen) plugin.
@@ -52,8 +52,8 @@ TBD overview picture painted
   - `pio run -t upload -e soilsensor_v1_L4` - PCB v1, STM32 L4
   - `pio run -t upload -e soilsensor_v1_L0` - PCB v1, STM32 L0
 - [3D Printed cage](cage) sealed with silicone:
-  - ![Cage Preview](SoilSensor_v2_cage.jpg)
-  - ![Cage Sealed](SoilSensor_v2_sealed.jpg)
+  - ![Cage Preview](pictures/SoilSensor_v2_cage.jpg)
+  - ![Cage Sealed](pictures/SoilSensor_v2_sealed.jpg)
 - BUGS:
   - C3 (the condensator for the BOOT selector) should have been connected to GND instead of VCC to avoid starting the bootloader first time we connect the battery. Not soldering it works fine so need for a new revision.
 
@@ -68,16 +68,16 @@ TBD overview picture painted
 - [SoilSensor.sch](KiCad/SoilSensor.sch)
   - ![Schematics Preview](pictures/SoilSensor%20v1%20Schematics.png)
 - [SoilSensor.kicad_pcb](KiCad/SoilSensor.kicad_pcb)
-  - ![PCB Overview](SoilSensor_v1_overview.jpg)
-  - ![PCB Close View Front](SoilSensor_v1_PCB_close_view_front.jpg)
-  - ![PCB Close View Rear](SoilSensor_v1_PCB_close_view_rear.jpg)
+  - ![PCB Overview](pictures/SoilSensor_v1_overview.jpg)
+  - ![PCB Close View Front](pictures/SoilSensor_v1_PCB_close_view_front.jpg)
+  - ![PCB Close View Rear](pictures/SoilSensor_v1_PCB_close_view_rear.jpg)
   - [SVG for soil sonde](pictures/soilSonde.svg)
     - edited with [Inkscape](https://inkscape.org)
     - imported to KiCad with [svg2shenzhen](https://github.com/badgeek/svg2shenzhen) plugin.
     - ![Sonde Preview](pictures/soilSonde.svg)
 - [3D Printed cage](cage) sealed with silicone
 - BUGS:
-  - The boot input is missing a pull-up so sometimes the PCB boots into the bootloader after power-up. See [front picture](SoilSensor_v1_PCB_close_view_front.jpg) on how to manually add one.
+  - The boot input is missing a pull-up so sometimes the PCB boots into the bootloader after power-up. See [front picture](pictures/SoilSensor_v1_PCB_close_view_front.jpg) on how to manually add one.
 
 ## Soil Sensor v0
 

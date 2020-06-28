@@ -16,7 +16,7 @@ TBD overview picture painted
 - [SoilSensor.sch](KiCad/GenericSensor_v1.sch)
   - ![Schematics Preview](pictures/GenericSensor_v1_schematics.png)
 - [SoilSensor.kicad_pcb](KiCad/GenericSensor_v1.kicad_pcb)
-  - ![PCB](TBD.jpg)
+  - ![PCB TBD](TBD.jpg)
 
 ## Use Cases
 
@@ -27,7 +27,7 @@ Used to detect when a car is parked in a parking lot.
 - Firmware:
   For programming either use the platformio UI or any of the following CLI commands:
   - `pio run -t upload -e distance_v1` - PCB v2, STM32 L4
-- [3D Printed cage](cage):
-  - ![Cage Preview](TBD.jpg)
+- [3D Printed cage](cages):
+  - ![Cage Preview TBD](TBD.jpg)
 - BUGS:
   - None so far
