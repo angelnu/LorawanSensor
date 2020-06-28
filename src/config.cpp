@@ -40,11 +40,7 @@ void init_device_config(bool reset) {
         device_config_new.measure_interval_s = TX_INTERVAL;
         device_config_new.measure_average = DEFAULT_AVERAGE_MEASUREMENTS;
         device_config_new.max_skiped_measurements = DEFAULT_MAX_SKIPED_MEASUREMENTS;
-        device_config_new.min_s = DEFAULT_MIN_S;
-        device_config_new.max_s = DEFAULT_MAX_S;
-        device_config_new.min_percentage_v_2_send = DEFAULT_MIN_PERCENTAGE_V_2_SEND;
-        device_config_new.min_percentage_t_2_send = DEFAULT_MIN_PERCENTAGE_T_2_SEND;
-        device_config_new.min_percentage_s_2_send = DEFAULT_MIN_PERCENTAGE_S_2_SEND;
+        set_device_specific_config(device_config_new.device);
     }
     device_config_new.version = DEVICE_VERSION;
     write_device_config(device_config_new);

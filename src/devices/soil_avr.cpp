@@ -1,9 +1,15 @@
 #include "config.h"
-#ifdef SENSOR_AVR_SOIL
+#ifdef SENSOR_SOIL_AVR
 
 #include "sleep.h"
 #include "arduino.h"
 #include "sensor.h"
+
+#define SENSOR_SOIL_ENABLED A2
+#define SENSOR_SOIL_WARM_TIME_MS 500
+#define SENSOR_SOIL_ADC A1
+#define SENSOR_SOIL_MAX_VALUE_V 3.0
+#define SENSOR_BATTERY_ADC A0
 
 static float adc_to_mv(uint16_t raw){
   const uint16_t VCC_REF = 1100;

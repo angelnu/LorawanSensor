@@ -63,9 +63,9 @@ const lmic_pinmap lmic_pins = {
 void lorawan_setup() {
 
   pinMode(PIN_LORAWAN_RST, OUTPUT);
-  digitalWrite(PB0, LOW);
+  digitalWrite(PIN_LORAWAN_RST, LOW);
   delay(1000);
-  digitalWrite(PB0, HIGH);
+  digitalWrite(PIN_LORAWAN_RST, HIGH);
   delay(1000);
 
 
@@ -174,7 +174,8 @@ void os_sleep(uint32_t maxPeriod = 60000) {
 
 
       
-    do_sleep(sleepPeriod - MS_WAKEUP_EARLY, SLEEP_MODE_PRECISE);
+    size_t sleep_mode = (sleepPeriod > 100*1000) ? SLEEP_MODE_DEEPSLEEP : SLEEP_MODE_PRECISE;
+    do_sleep(sleepPeriod - MS_WAKEUP_EARLY, sleep_mode);
     //delay(sleepPeriod - MS_WAKEUP_EARLY);
 
     log_debug(F("EXIT: "));
@@ -263,7 +264,9 @@ void lorawan_send(uint8_t* data, u1_t dlen, uint8_t port) {
 
 
   log_info(millis());
-  log_info(F(" Sending.. "));
+  log_info(F(" Sending "));
+  log_info(dlen);
+  log_info(F(" bytes..."));
 
 
   // Check if there is not a current TX/RX job running
