@@ -105,7 +105,7 @@ void print_buildinfo();
   const uint32_t TX_INTERVAL=60;
 #endif
 
-#define LMIC_CLOCK_ERROR_PERCENTAGE 50
+#define LMIC_CLOCK_ERROR_PERCENTAGE 5
 
 
 
