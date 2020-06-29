@@ -195,9 +195,9 @@ class lorawan_device:
 
         for line in programmer_output.split('\n'):
             if "Flash size" in line:
-                if "64 KBytes":
+                if "64 KBytes" in line:
                     self.__flash_size = 64 * 1024
-                elif "128 KBytes":
+                elif "128 KBytes" in line:
                     self.__flash_size = 128 * 1024
                 else:
                     raise NameError("Unrecognised flash size")
@@ -228,7 +228,7 @@ class lorawan_device:
                     if value.lower() in line.lower():
                         print ("Option byte "+option+ " already set to "+value+" -> skipping set")
                     else:
-                        write_optionbytes += " --optionbytes "+value+"="+value
+                        write_optionbytes += " --optionbytes "+option+"="+value
                     break
             else:
                 print("Option "+option+" not found in: \n"+read_optionbytes_output)
@@ -237,13 +237,16 @@ class lorawan_device:
         if (len(write_optionbytes) == 0):
             return #Nothing to change
         
-        WRITE_OPTIONBYTES_CMD = PROGRAMMER + " " + write_optionbytes
-        try:
-            read_optionbytes_output = subprocess.check_output(WRITE_OPTIONBYTES_CMD.split(" "),universal_newlines=True)
-        except subprocess.CalledProcessError as e:
-            print("ERROR5: \n"+e.output)
+        for i in range(2):
+            WRITE_OPTIONBYTES_CMD = PROGRAMMER + write_optionbytes
+            print(WRITE_OPTIONBYTES_CMD)
+            try:
+                read_optionbytes_output = subprocess.check_output(WRITE_OPTIONBYTES_CMD.split(" "),universal_newlines=True)
+                break
+            except subprocess.CalledProcessError as e:
+                print("ERROR5: \n"+e.output)
+        else:
             sys.exit(-1)
-
         
         
         
@@ -275,3 +278,4 @@ device = lorawan_device(args.name,
                         eeprom_address = int(args.eeprom_address, 16),
                         optionbytes = args.optionbytes)
 device.program()
+print ("Device Lorawan keys loaded")

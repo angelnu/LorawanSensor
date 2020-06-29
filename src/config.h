@@ -2,21 +2,17 @@
 #define config_h
 
 #include "arduino.h"
+#include "devices/devices.h"
 
 //Device config
 
-#define DEVICE_CONFIG_VERSION 2
+#define DEVICE_CONFIG_VERSION 3
 #if DEBUG
   #define DEFAULT_MAX_SKIPED_MEASUREMENTS 1
 #else
   #define DEFAULT_MAX_SKIPED_MEASUREMENTS 60
 #endif
 #define DEFAULT_AVERAGE_MEASUREMENTS 5
-#define DEFAULT_MIN_S 100
-#define DEFAULT_MAX_S 600
-#define DEFAULT_MIN_PERCENTAGE_V_2_SEND 1;
-#define DEFAULT_MIN_PERCENTAGE_T_2_SEND 10;
-#define DEFAULT_MIN_PERCENTAGE_S_2_SEND 5;
 
 struct lorawan_keys_t {
   uint8_t appkey[16];
@@ -25,22 +21,21 @@ struct lorawan_keys_t {
 };
 
 struct device_config_t {
+  //Common part
   uint8_t version_config;
   uint8_t version;
   uint16_t measure_interval_s;
   uint8_t measure_average;
   uint8_t max_skiped_measurements;
-  uint16_t min_s;
-  uint16_t max_s;
-  uint8_t min_percentage_v_2_send;
-  uint8_t min_percentage_t_2_send;
-  uint8_t min_percentage_s_2_send;
+  //device specific
+  device_config_device_t device;
 };
 
 #define UID_BYTES_LENGTH 12
 
 extern lorawan_keys_t lorawan_keys;
 extern device_config_t device_config;
+extern void set_device_specific_config(device_config_device_t& specific_device_config); //implemented differently for each device
 void init_device_config(bool reset=false);
 void write_device_config(device_config_t &device_config);
 void print_buildinfo();
@@ -53,22 +48,15 @@ void print_buildinfo();
 #define SENSOR_BATTERY_CHANNEL 3
 #define SENSOR_SOIL_VOLTAGE_CHANNEL 4
 #define SENSOR_SOIL_HUMIDITY_CHANNEL 40
-#define SENSOR_SOIL_TEMP_CHANNEL 41
+#define SENSOR_TEMP_CHANNEL 41
 
 //Sensor settings
 #if defined(ARDUINO_ARCH_AVR)
   #define SENSOR_AVR_SOIL 1
 
   #define SENSOR_ADC_REFERENCE INTERNAL
-  #define SENSOR_SOIL_ENABLED A2
-  #define SENSOR_SOIL_WARM_TIME_MS 500
-  #define SENSOR_SOIL_ADC A1
-  #define SENSOR_SOIL_MAX_VALUE_V 3.0
-  #define SENSOR_BATTERY_ADC A0
 #elif defined(ARDUINO_ARCH_STM32)
 
-  #define SENSOR_SMT32_SOIL
-  #define SENSOR_SOIL_MAX_VALUE 4096
   #if defined(STM32L0xx)
     //See https://www.mouser.de/datasheet/2/389/stm32l010k8-1851374.pdf
     #define ADC_VREFINT_3V0_30C_ADDR 0x1FF80078
