@@ -75,7 +75,10 @@ TBD overview picture painted
     - edited with [Inkscape](https://inkscape.org)
     - imported to KiCad with [svg2shenzhen](https://github.com/badgeek/svg2shenzhen) plugin.
     - ![Sonde Preview](pictures/soilSonde.svg)
-- [3D Printed cage](cage) sealed with silicone
+- [3D Printed cage](cage) mount with battery:
+  - ![Cage Preview](pictures/SoilSensor_v1_mount.jpg)
+  - ![Cage Complete](pictures/SoilSensor_v1_cage.jpg)
+
 - BUGS:
   - The boot input is missing a pull-up so sometimes the PCB boots into the bootloader after power-up. See [front picture](pictures/SoilSensor_v1_PCB_close_view_front.jpg) on how to manually add one.
 
