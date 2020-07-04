@@ -20,7 +20,28 @@ TBD overview picture painted
 
 ## Use Cases
 
-### Distance Sensor
+## Basic v1
+
+This is mainly for debugging and as base for the other use cases. It is just the generic sensor and its embedded battery and temperature sensors.
+- Sensor: none extra, just battery voltage and temperature
+- Power consumption:
+  - measurements: 0,4 mA, 30 ms, 1 measurement/minute
+  - transmission: 120 mA, 50 ms, sending once/hour
+  - iddle: 300 uA, 2 s, sending once/hour
+  - deep sleep: 2 uA
+  - battery: 1400 mAh
+  - theoretical batery live (no auto-discharge): 39 years
+- PINs: none of the external pins used
+- Firmware:
+  For programming either use the platformio UI or any of the following CLI commands:
+  - `pio run -t upload -e generic_basic_v1` - PCB v2, STM32 L4
+  - `pio run -t upload -e generic_basic_v1_debug` - PCB v2, STM32 L4, debug
+- [3D Printed cage](cages):
+  - None
+- BUGS:
+  - None so far
+
+### Distance Sensor v1
 
 Used to detect when a car is parked in a parking lot.
 
