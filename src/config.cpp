@@ -10,7 +10,8 @@ device_config_t device_config;
 int read_device_config() {
     EEPROM.get(CONFIG_ADDRESS, device_config);
 
-    if (device_config.version_config != DEVICE_CONFIG_VERSION)
+    if ((device_config.version_config != DEVICE_CONFIG_VERSION) ||
+        (bool(device_config.is_debug) != bool(DEBUG)))
         return -1;
     else
         return 0;

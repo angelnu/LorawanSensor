@@ -6,7 +6,10 @@
 
 //Device config
 
-#define DEVICE_CONFIG_VERSION 3
+#ifndef DEBUG
+  #define DEBUG 0 
+#endif
+#define DEVICE_CONFIG_VERSION 4
 #if DEBUG
   #define DEFAULT_MAX_SKIPED_MEASUREMENTS 1
 #else
@@ -24,6 +27,8 @@ struct device_config_t {
   //Common part
   uint8_t version_config;
   uint8_t version;
+  uint8_t is_debug;
+  uint8_t reserved;
   uint16_t measure_interval_s;
   uint8_t measure_average;
   uint8_t max_skiped_measurements;
@@ -49,6 +54,9 @@ void print_buildinfo();
 #define SENSOR_SOIL_VOLTAGE_CHANNEL 4
 #define SENSOR_SOIL_HUMIDITY_CHANNEL 40
 #define SENSOR_TEMP_CHANNEL 41
+#define SENSOR_DISTANCE_CHANNEL 42
+#define SENSOR_PEAK_SIGNAL_CHANNEL 43
+#define SENSOR_LUMINOSITY_CHANNEL 44
 
 //Sensor settings
 #if defined(ARDUINO_ARCH_AVR)
@@ -81,7 +89,7 @@ void print_buildinfo();
 #define log_warning_ln Serial.println
 #define log_info Serial.print
 #define log_info_ln Serial.println
-#ifdef DEBUG
+#if DEBUG
   #define log_debug Serial.print
   #define log_debug_ln Serial.println
 #else
@@ -99,7 +107,7 @@ void print_buildinfo();
 // cycle limitations).
 #ifdef TX_INTERVAL
   //Use directly
-#elif defined(DEBUG)
+#elif DEBUG
   const uint32_t TX_INTERVAL=60;
 #else
   const uint32_t TX_INTERVAL=60;

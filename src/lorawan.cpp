@@ -330,7 +330,7 @@ void lorawan_resume() {
 /* **************************************************************
  * Print event for debug
  * *************************************************************/
-#ifndef DEBUG
+#if DEBUG
   static void printEvent(ev_t ev) {};
 #else
   static void printHex2(unsigned v) {
