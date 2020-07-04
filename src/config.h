@@ -9,7 +9,6 @@
 #ifndef DEBUG
   #define DEBUG 0 
 #endif
-#define DEVICE_CONFIG_VERSION 4
 #if DEBUG
   #define DEFAULT_MAX_SKIPED_MEASUREMENTS 1
 #else
