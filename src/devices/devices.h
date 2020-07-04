@@ -20,7 +20,9 @@
         uint16_t max_s;
         uint8_t min_percentage_v_2_send;
         uint8_t min_percentage_t_2_send;
-        uint8_t min_percentage_d_2_send;
+        uint8_t min_percentage_distance_2_send;
+        uint8_t min_percentage_peak_signal_2_send;
+        uint8_t min_percentage_luminosity_2_send;
     };
 #else
     #error "Unkown device type"
