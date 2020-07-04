@@ -15,6 +15,7 @@
   #define DEFAULT_MAX_SKIPED_MEASUREMENTS 60
 #endif
 #define DEFAULT_AVERAGE_MEASUREMENTS 5
+#define PAUSE_SECONDS_AFTER_WATCHDOG 600
 
 struct lorawan_keys_t {
   uint8_t appkey[16];
