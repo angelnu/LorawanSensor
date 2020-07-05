@@ -134,7 +134,7 @@ bool sensor_measure(CayenneLPP& lpp){
     lpp.addDigitalInput(SENSOR_VERSION_CHANNEL, device_config.version);
     lpp.addAnalogInput(SENSOR_BATTERY_CHANNEL, battery_v);
     old_battery_v = battery_v;
-    lpp.addTemperature(SENSOR_DISTANCE_CHANNEL, temp_c);
+    lpp.addTemperature(SENSOR_TEMP_CHANNEL, temp_c);
     old_temp_c = temp_c;
     lpp.addAnalogInput(SENSOR_DISTANCE_CHANNEL, distance_dm);
     old_distance_dm = distance_dm;
