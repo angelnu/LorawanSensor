@@ -38,7 +38,7 @@ TBD overview picture painted
 
 - [Aisler PCB project](https://aisler.net/p/DFIQTREA)
 - [SoilSensor.sch](KiCad/SoilSensor_v2.sch)
-  - ![Schematics Preview](pictures/SoilSensor%20v2%20Schematics.png)
+  - ![Schematics Preview](pictures/SoilSensor_v2.2_Schematics.png)
 - [SoilSensor.kicad_pcb](KiCad/SoilSensor_v2.kicad_pcb)
   - ![PCB Full View](pictures/SoilSensor_v2_PCB_full_view.jpg)
   - ![PCB Close View](pictures/SoilSensor_v2_PCB_close_view.jpg)

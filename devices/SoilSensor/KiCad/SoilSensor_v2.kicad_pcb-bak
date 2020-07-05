@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 8)
+    (drawings 9)
     (tracks 255)
     (zones 0)
     (modules 28)
@@ -2255,6 +2255,9 @@
     (pad "" thru_hole circle (at 9 -0.8 180) (size 1 1) (drill 0.4) (layers *.Cu))
   )
 
+  (gr_text "Soil Sensor v2.1\n07.06.2020" (at 139.954 40.4495) (layer F.Mask)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
   (gr_text 3,3V (at 148.336 67.056 90) (layer F.SilkS)
     (effects (font (size 0.5 0.5) (thickness 0.125)))
   )
