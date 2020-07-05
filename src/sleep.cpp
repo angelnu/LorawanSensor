@@ -1,6 +1,7 @@
 #include "sleep.h"
 #include "config.h"
-//#define SLEEP_ATMEGA 1
+#include "assert.h"
+
 #if defined(ARDUINO_ARCH_AVR)
 #include "LowPower.h"
 #elif defined(ARDUINO_ARCH_STM32)
@@ -94,39 +95,40 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
     //mode = SLEEP_MODE_DEEPSLEEP;
     if (mode==SLEEP_MODE_DEEPSLEEP) {
 
+      //Round time
       uint32_t resto = sleepTime % 1000;
       if (resto > 0) {
         sleepTime -= resto;
         sleepTime += 1000;
       }
 
+      //Set RTC subseconds to 0 -> without it some interrupts miss
       rtc.setSubSeconds(0);
-      uint32_t startTime = rtc.getEpoch();
-      UNUSED(startTime);
+
+      //remember start
+      //uint32_t start_ms=0;
+      //uint32_t startTime = rtc.getEpoch();
 
       HAL_SuspendTick();
 
       //HAL_PWREx_EnterSTOP2Mode(PWR_STOPENTRY_WFI);
+      //sleepTime -= 200;
+      log_debug(F("Deep sleep "));
+      log_debug_ln(sleepTime);
+      log_flush();
       LowPower.deepSleep(sleepTime /* calibrated for STM32L04 */);
 
-      uint32_t epochMs;
-      //sleepTime = (rtc.getEpoch(&epochMs) - startTime) * 1000;
-      //sleepTime += epochMs;
-      addMillis(sleepTime);
       HAL_ResumeTick();
-
-      log_debug(F("epoch  "));
+      
+      addMillis(sleepTime);
+      log_debug(F("Deep slept "));
       log_debug_ln(sleepTime);
-      log_debug(F("epoch MS: "));
-      log_debug_ln(epochMs);
     
     } else {
       uint32_t start=millis();
       while (millis() < start+sleepTime)
         HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
     }
-
-    //Serial.begin(serialPortSpeed);
 
   #else
     delay(sleepTime);
