@@ -132,6 +132,11 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
 
 }
 
+bool __skip_sleep=false;
+void skip_sleep() { __skip_sleep = true;}
+bool is_skip_sleep() { return __skip_sleep;};
+void reset_skip_sleep() { __skip_sleep = false;}
+
 void loop_periodically(uint32_t ms, void (&loop_work)()){
 
   //Time before work
@@ -143,8 +148,9 @@ void loop_periodically(uint32_t ms, void (&loop_work)()){
   unsigned long timeAfterSending = millis();
 
   // go to sleep
-  if (ms > (timeAfterSending - timeBeforeSending))
+  if ((!is_skip_sleep()) || ms > (timeAfterSending - timeBeforeSending))
     do_sleep(ms - (timeAfterSending - timeBeforeSending));  // sleep minus elapsed time
   else
     log_warning(F("Skipped sleep"));
+    reset_skip_sleep();
 };

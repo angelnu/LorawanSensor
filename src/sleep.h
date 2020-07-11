@@ -13,4 +13,8 @@ void do_sleep(uint32_t sleepTime, size_t mode = SLEEP_MODE_DEEPSLEEP);
 
 void loop_periodically(uint32_t ms, void (&loop_work)());
 
+//Skip next sleep if more work is needed
+void skip_sleep();
+bool is_skip_sleep();
+
 #endif
