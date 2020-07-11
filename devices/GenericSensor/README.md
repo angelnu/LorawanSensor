@@ -65,7 +65,43 @@ Used to detect when a car is parked in a parking lot.
   For programming either use the platformio UI or any of the following CLI commands:
   - `pio run -t upload -e distance_v1` - PCB v2, STM32 L4
   - `pio run -t upload -e distance_v1_debug` - PCB v2, STM32 L4, debug
-- [3D Printed cage](cages):
-  - ![Cage Preview TBD](TBD.jpg)
+- [3D Printed cage](cages/distance):
+  - ![Cage Preview TBD](pictures/TBD.jpg)
+- BUGS:
+  - None so far
+  
+### Door Sensor v1
+
+This sensor tracks the state (open/closed) of up to 4 doors or windows. It supports two modes:
+- simple: the state of the door/window is directly reported as soon as it changes
+- perssistent mode (or post-mode): once the door is opened once is reported as open even if it gets closed afterwards. A second sensor is used to reset the reported door status back to closed. The reset is typically associated to a second door used to pick up the post but it could also get connected to a button that plays the same role.
+
+- Sensor:
+  - 1-8 x [Reed Contact N/O Magnetic Induction Switch](https://www.amazon.de/gp/product/B07SZDGXLC): this switch reports open so far no magnet is close. This would correspond to the door/window being open.
+  - 1-8 x Circular magnet
+- Power consumption:
+  - measurements: 1,5 mA, 40 ms, 2 measurement/day (post mode)
+  - transmission: 120 mA, 50 ms, sending 2/day
+  - iddle: 300 uA, 2 s, sending once/hour
+  - deep sleep: 2 uA + (0.3 * number_of_sensors)
+  - battery: 300 mAh
+  - theoretical batery live (no auto-discharge): 23 years
+- PINs: each sensor needs a big (10 MOhm resistor) pull-up
+  - VCC  -> pull-up resistors
+  - PB7  -> pull-up resistor and door 1 reed switch
+  - PB6  -> pull-up resistor and door 1 reset reed switch
+  - PB5  -> pull-up resistor and door 2 reed switch (need to uncomment in `platformio.ini`)
+  - PB4  -> pull-up resistor and door 2 reset reed switch (need to uncomment in `platformio.ini`)
+  - PB3  -> pull-up resistor and door 3 reed switch (need to uncomment in `platformio.ini`)
+  - PA15 -> pull-up resistor and door 4 reset reed switch (need to uncomment in `platformio.ini`)
+  - PA0  -> pull-up resistor and door 4 reed switch (need to uncomment in `platformio.ini`)
+  - PA4  -> pull-up resistor and door 4 reset reed switch (need to uncomment in `platformio.ini`)
+  - GND -> reed switches
+- Firmware:
+  For programming either use the platformio UI or any of the following CLI commands:
+  - `pio run -t upload -e distance_v1` - PCB v2, STM32 L4
+  - `pio run -t upload -e distance_v1_debug` - PCB v2, STM32 L4, debug
+- [3D Printed cage](cages/distance):
+  - ![Cage Preview TBD](pictures/TBD.jpg)
 - BUGS:
   - None so far
