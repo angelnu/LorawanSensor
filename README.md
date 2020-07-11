@@ -59,7 +59,7 @@ Commands:
 
 This project requires [Platformio](https://platformio.org/) and the [STM32 Cube Programmer](https://www.st.com/en/development-tools/stm32cubeprog.html). Both need to be installed and available in the PATH.
 
-Keys for each detected device will be stored under `config/devices.ini`. Before you run for the first time please create the file and include your app EUI. You can create this by registering a new app at the [TTN](https://console.thethingsnetwork.org/applications) console. The file should have:
+Keys for each detected device will be stored under `config/devices.ini`. Before you run for the first time please create the file and include your app EUI (or modify afterwards). You can create this by registering a new app at the [TTN](https://console.thethingsnetwork.org/applications) console. The file should have:
 ```
 [global]
 appeui = <your app EUI>
@@ -82,6 +82,21 @@ DEVEUI: 0x....
 Starting
 7579 Sending.. 18248 TX_COMPLETE
 ```
+
+## Adding new devices
+
+1. Add a section to `platformio.ini` for your device. The key part is to have a dedicate `-D SENSOR_<PCB name>_<sensor name>_<MCU name>` (such as `-D SENSOR_GENERIC_DISTANCE_SMT32`) -> this will be needed in the next step.
+  - If you are just using the generic PCB then you can copy `Basic v1` and modify to your needs
+  - If you are creating your own PCB based on the STM32 MCU then you can copy `Generic v1` and modify to your needs
+  - If you use a different MCU then you will need to create your own target extending `base` and `base_debug`. Please notice that you will in this case have to add support for the new MCU in multiple areas of the code where the MCU is relevant: the code has been tested with STM32 (mainly) and atmega32.
+2. Add a new cpp file to `src/devices/` for your new device. The namming convention is <PCB type>_<device name>_<MCU family>.cpp. If you are using a STM32 CPU you should consider copying `generic_basic_stm32.cpp` which does not depend on any external sensors to work and then add your own sensors to it. You need to make this file to only get included and compiled when `SENSOR_<PCB name>_<sensor name>_<MCU name>` is defined.
+3. Add to `devices.h` a section for your device where you set your `device_config_device_t`. This struct includes what persistent settings your device needs. These settings can later be modified via a LORAWAN command.
+4. Documment your device in the `devices` folder. This folder structure is:
+   - _<PCB name>_
+     - _cages_: instructions and files to 3D print cages for devices
+     - _KiCad_: Schematics and PCBs created with KiCad
+     - _pictures_: pcitures embedded in markdown readme
+     - _README_: instructions, pictures and links for devices. It is structured with a chapter for each device sharing the same PCB and a subcharter for each mayor version of the device. 
 
 ## ToDos
 - Firmware OTA update
