@@ -92,33 +92,29 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
     STM32RTC& rtc = STM32RTC::getInstance();
 
     //SLEEP_MODE_DEEPSLEEP seems to be precise enough after reseting RTC epoch
-    //mode = SLEEP_MODE_DEEPSLEEP;
+    //if (sleepTime > 500)
+    //  mode = SLEEP_MODE_DEEPSLEEP;
     if (mode==SLEEP_MODE_DEEPSLEEP) {
 
-      //Round time
-      uint32_t resto = sleepTime % 1000;
-      if (resto > 0) {
-        sleepTime -= resto;
-        sleepTime += 1000;
-      }
-
-      //Set RTC subseconds to 0 -> without it some interrupts miss
-      rtc.setSubSeconds(0);
-
       //remember start
-      //uint32_t start_ms=0;
-      //uint32_t startTime = rtc.getEpoch();
+      uint32_t start_ms=0;
+      uint32_t startTime = rtc.getEpoch(&start_ms);
 
       HAL_SuspendTick();
 
       //HAL_PWREx_EnterSTOP2Mode(PWR_STOPENTRY_WFI);
       //sleepTime -= 200;
-      log_debug(F("Deep sleep "));
-      log_debug_ln(sleepTime);
-      log_flush();
+      //log_debug(F("Deep sleep "));
+      //log_debug_ln(sleepTime);
+      //log_flush();
       LowPower.deepSleep(sleepTime /* calibrated for STM32L04 */);
 
+      //remember start
+      uint32_t end_ms=0;
+      uint32_t endTime = rtc.getEpoch(&end_ms);
+
       HAL_ResumeTick();
+      sleepTime = (endTime - startTime) * 1000 + endTime - startTime;
       
       addMillis(sleepTime);
       log_debug(F("Deep slept "));
