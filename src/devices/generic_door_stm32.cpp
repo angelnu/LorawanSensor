@@ -227,7 +227,7 @@ bool sensor_measure(CayenneLPP& lpp){
     lpp.addDigitalInput(SENSOR_VERSION_CHANNEL, device_config.version);
     lpp.addAnalogInput(SENSOR_BATTERY_CHANNEL, battery_v);
     old_battery_v = battery_v;
-    lpp.addTemperature(SENSOR_DISTANCE_CHANNEL, temp_c);
+    lpp.addTemperature(SENSOR_TEMP_CHANNEL, temp_c);
     old_temp_c = temp_c;
     #ifdef PIN_DOOR_1
     lpp.addDigitalInput(SENSOR_DOOR_1_CHANNEL, door_1_open);

@@ -8,15 +8,23 @@ TBD picture overview installed
 
 ### Generic Sensor v1
 
-This is the (currently) final version without any unneded HW. It is optimised to make it easy to esamble with only the programing pins and the battery holder not being SMD components.
+This is the first version without any unneded HW. It is optimised to make it easy to esamble with only the programing pins and the battery holder not being SMD components. It does not external pull-ups so it relays into the internal ones in the MCU -> this is not the best for battery life (40 KOhms drag ca 75 uA) so v2 was develop to allow use larger (such as 10 MOhms) instead.
 
-TBD overview picture painted
+Since v2 is backwards compatible there is no need to use v1 anymore.
 
 - [Aisler PCB project](https://aisler.net/p/YFVFQBHD)
 - [SoilSensor.sch](KiCad/GenericSensor_v1.sch)
   - ![Schematics Preview](pictures/GenericSensor_v1_schematics.png)
 - [SoilSensor.kicad_pcb](KiCad/GenericSensor_v1.kicad_pcb)
-  - ![PCB TBD](TBD.jpg)
+
+### Generic Sensor v2
+
+This verssion is backwards compatible (same posssitions for all components, even the v1 stencil might be used) but adds support for additional pull-ups or pull-downs. Check the schematic bellow to understand the options: there are two sets of solder jumpers that allow pull-up or pull-down selection. Also using 0R you can enable additional 3V and GND outputs.
+
+- [Aisler PCB project](https://aisler.net/p/LVXPWPMZ)
+- [SoilSensor.sch](KiCad/GenericSensor_v1.sch)
+  - ![Schematics Preview](pictures/GenericSensor_v1_schematics.png)
+- [SoilSensor.kicad_pcb](KiCad/GenericSensor_v1.kicad_pcb)
 
 ## Use Cases
 
@@ -87,7 +95,7 @@ This sensor tracks the state (open/closed) of up to 4 doors or windows. It suppo
   - deep sleep: 2 uA + (0.3 * number_of_sensors)
   - battery: 300 mAh
   - theoretical batery live (no auto-discharge): 23 years
-- PINs: each sensor needs a big (10 MOhm resistor) pull-up
+- PINs (using PCB v1): each sensor needs a big (10 MOhm resistor) pull-up
   - VCC  -> pull-up resistors
   - PB7  -> pull-up resistor and door 1 reed switch
   - PB6  -> pull-up resistor and door 1 reset reed switch
