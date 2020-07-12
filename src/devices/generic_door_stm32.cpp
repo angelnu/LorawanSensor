@@ -19,6 +19,40 @@ void set_device_specific_config(device_config_device_t& specific_device_config) 
 void pin_interrupt_handler() {
   skip_sleep();
 };
+void pin_interrupt_handler_door_1() {
+  log_debug_ln("Door 1 Interrupt");
+  pin_interrupt_handler();
+};
+void pin_interrupt_handler_door_1_reset() {
+  log_debug_ln("Door 1 Reset Interrupt");
+  pin_interrupt_handler();
+};
+void pin_interrupt_handler_door_2() {
+  log_debug_ln("Door 2 Interrupt");
+  pin_interrupt_handler();
+};
+void pin_interrupt_handler_door_2_reset() {
+  log_debug_ln("Door 2 Reset Interrupt");
+  pin_interrupt_handler();
+};
+void pin_interrupt_handler_door_3() {
+  log_debug_ln("Door 3 Interrupt");
+  pin_interrupt_handler();
+};
+void pin_interrupt_handler_door_3_reset() {
+  log_debug_ln("Door 3 Reset Interrupt");
+  pin_interrupt_handler();
+};
+void pin_interrupt_handler_door_4() {
+  log_debug_ln("Door 4 Interrupt");
+  pin_interrupt_handler();
+};
+void pin_interrupt_handler_door_4_reset() {
+  log_debug_ln("Door 4 Reset Interrupt");
+  pin_interrupt_handler();
+};
+
+
 //Called once during setup
 void sensor_setup() {
 
@@ -26,31 +60,41 @@ void sensor_setup() {
 
   analogReadResolution(ADC_RESOLUTION);
 
+  uint32_t pin_mode =
+    //INPUT_PULLUP; //This consumes too much (40 KOhms)
+    INPUT_FLOATING;
+
   #ifdef PIN_DOOR_1
-    pinMode(PIN_DOOR_1, INPUT_FLOATING);
-    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_1), pin_interrupt_handler, CHANGE);
-      #ifdef PIN_DOOR_1_RESET
-    pinMode(PIN_DOOR_1_RESET, INPUT_FLOATING);
-        attachInterrupt(digitalPinToInterrupt(PIN_DOOR_1_RESET), pin_interrupt_handler, CHANGE);
-      #endif
+    pinMode(PIN_DOOR_1, pin_mode);
+    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_1), pin_interrupt_handler_door_1, CHANGE);
+    #ifdef PIN_DOOR_1_RESET
+      pinMode(PIN_DOOR_1_RESET, pin_mode);
+      attachInterrupt(digitalPinToInterrupt(PIN_DOOR_1_RESET), pin_interrupt_handler_door_1_reset, CHANGE);
+    #endif
   #endif
   #ifdef PIN_DOOR_2
-    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_2), pin_interrupt_handler, CHANGE);
-      #ifdef PIN_DOOR_2_RESET
-        attachInterrupt(digitalPinToInterrupt(PIN_DOOR_2_RESET), pin_interrupt_handler, CHANGE);
-      #endif
+    pinMode(PIN_DOOR_2, pin_mode);
+    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_2), pin_interrupt_handler_door_2, CHANGE);
+    #ifdef PIN_DOOR_2_RESET
+      pinMode(PIN_DOOR_2_RESET, pin_mode);
+      attachInterrupt(digitalPinToInterrupt(PIN_DOOR_2_RESET), pin_interrupt_handler_door_2_reset, CHANGE);
+    #endif
   #endif
   #ifdef PIN_DOOR_3
-    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_3), pin_interrupt_handler, CHANGE);
-      #ifdef PIN_DOOR_3_RESET
-        attachInterrupt(digitalPinToInterrupt(PIN_DOOR_3_RESET), pin_interrupt_handler, CHANGE);
-      #endif
+    pinMode(PIN_DOOR_3, pin_mode);
+    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_3), pin_interrupt_handler_door_3, CHANGE);
+    #ifdef PIN_DOOR_3_RESET
+      pinMode(PIN_DOOR_3_RESET, pin_mode);
+      attachInterrupt(digitalPinToInterrupt(PIN_DOOR_3_RESET), pin_interrupt_handler_door_3_reset, CHANGE);
+    #endif
   #endif
   #ifdef PIN_DOOR_4
-    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_4), pin_interrupt_handler, CHANGE);
-      #ifdef PIN_DOOR_4_RESET
-        attachInterrupt(digitalPinToInterrupt(PIN_DOOR_4_RESET), pin_interrupt_handler, CHANGE);
-      #endif
+    pinMode(PIN_DOOR_4, pin_mode);
+    attachInterrupt(digitalPinToInterrupt(PIN_DOOR_4), pin_interrupt_handler_door_4, CHANGE);
+    #ifdef PIN_DOOR_4_RESET
+      pinMode(PIN_DOOR_4_RESET, pin_mode);
+      attachInterrupt(digitalPinToInterrupt(PIN_DOOR_4_RESET), pin_interrupt_handler_door_4_reset, CHANGE);
+    #endif
   #endif
 }
 
@@ -107,25 +151,25 @@ bool sensor_measure(CayenneLPP& lpp){
   #ifdef PIN_DOOR_2
     bool door_2_open = 
     #ifdef PIN_DOOR_2_RESET
-      get_door_open(PIN_DOOR_2, PIN_DOOR_2_RESET);
+      get_door_open(old_door_2_open, PIN_DOOR_2, PIN_DOOR_2_RESET);
     #else
-      get_door_open(PIN_DOOR_2);
+      get_door_open(old_door_2_open, PIN_DOOR_2);
     #endif
   #endif
   #ifdef PIN_DOOR_3
     bool door_3_open = 
     #ifdef PIN_DOOR_3_RESET
-      get_door_open(PIN_DOOR_3, PIN_DOOR_3_RESET);
+      get_door_open(old_door_3_open, PIN_DOOR_3, PIN_DOOR_3_RESET);
     #else
-      get_door_open(PIN_DOOR_3);
+      get_door_open(old_door_3_open, PIN_DOOR_3);
     #endif
   #endif
   #ifdef PIN_DOOR_4
     bool door_4_open = 
     #ifdef PIN_DOOR_4_RESET
-      get_door_open(PIN_DOOR_4, PIN_DOOR_4_RESET);
+      get_door_open(old_door_4_open, PIN_DOOR_4, PIN_DOOR_4_RESET);
     #else
-      get_door_open(PIN_DOOR_4);
+      get_door_open(old_door_4_open, PIN_DOOR_4);
     #endif
   #endif
 
@@ -201,9 +245,11 @@ bool sensor_measure(CayenneLPP& lpp){
     lpp.addDigitalInput(SENSOR_DOOR_4_CHANNEL, door_4_open);
     old_door_4_open = door_4_open;
     #endif
-  } else {
-    if (!is_skip_sleep())
-     skippedMeasurements ++;
+  } else { 
+    //Reset counter on interrupt to filter int noise
+    if (is_skip_sleep()) skippedMeasurements=0;
+
+    skippedMeasurements ++;
 
     log_debug(F("Skipped sending measurement: "));
     log_debug_ln(skippedMeasurements);

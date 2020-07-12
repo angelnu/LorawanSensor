@@ -148,9 +148,14 @@ void loop_periodically(uint32_t ms, void (&loop_work)()){
   unsigned long timeAfterSending = millis();
 
   // go to sleep
-  if ((!is_skip_sleep()) || ms > (timeAfterSending - timeBeforeSending))
+  if ((!is_skip_sleep()) && ms > (timeAfterSending - timeBeforeSending)) {
     do_sleep(ms - (timeAfterSending - timeBeforeSending));  // sleep minus elapsed time
-  else
-    log_warning(F("Skipped sleep"));
-    reset_skip_sleep();
+  } else {
+    if (is_skip_sleep()) {
+      log_debug_ln(F("Skipped sleep by request"));
+      reset_skip_sleep();
+    } else {
+      log_warning_ln(F("Long loop -> skipped sleep"));
+    }
+  }
 };

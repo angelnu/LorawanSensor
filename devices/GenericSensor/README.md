@@ -79,6 +79,7 @@ This sensor tracks the state (open/closed) of up to 4 doors or windows. It suppo
 - Sensor:
   - 1-8 x [Reed Contact N/O Magnetic Induction Switch](https://www.amazon.de/gp/product/B07SZDGXLC): this switch reports open so far no magnet is close. This would correspond to the door/window being open.
   - 1-8 x Circular magnet
+  - 1-8 x 10 MOhms resistor
 - Power consumption:
   - measurements: 1,5 mA, 40 ms, 2 measurement/day (post mode)
   - transmission: 120 mA, 50 ms, sending 2/day
