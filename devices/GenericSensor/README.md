@@ -22,9 +22,9 @@ Since v2 is backwards compatible there is no need to use v1 anymore.
 This verssion is backwards compatible (same posssitions for all components, even the v1 stencil might be used) but adds support for additional pull-ups or pull-downs. Check the schematic bellow to understand the options: there are two sets of solder jumpers that allow pull-up or pull-down selection. Also using 0R you can enable additional 3V and GND outputs.
 
 - [Aisler PCB project](https://aisler.net/p/LVXPWPMZ)
-- [SoilSensor.sch](KiCad/GenericSensor_v1.sch)
-  - ![Schematics Preview](pictures/GenericSensor_v1_schematics.png)
-- [SoilSensor.kicad_pcb](KiCad/GenericSensor_v1.kicad_pcb)
+- [SoilSensor.sch](KiCad/GenericSensor_v2.sch)
+  - ![Schematics Preview](pictures/GenericSensor_v2_schematics.png)
+- [SoilSensor.kicad_pcb](KiCad/GenericSensor_v2.kicad_pcb)
 
 ## Use Cases
 
