@@ -106,11 +106,21 @@ This sensor tracks the state (open/closed) of up to 4 doors or windows. It suppo
   - PA0  -> pull-up resistor and door 4 reed switch (need to uncomment in `platformio.ini`)
   - PA4  -> pull-up resistor and door 4 reset reed switch (need to uncomment in `platformio.ini`)
   - GND -> reed switches
+- PINs (using PCB v2) for 2 doors:
+  - VCC: not used
+  - RB7, RB6, RB5, RB4: 10 MOhms (0805 type)
+  - RB3, RA15: 0R (0805 type)
+  - Solder jumpers umodified
+  - PB7  -> door 1 reed switch
+  - PB6  -> reset for door 1 (or door 3) reed switch
+  - PB5  -> door 2 reed switch
+  - PB4  -> reset for door 2 (or door 4) reed switch
+  - PB3, PA15 and both GNDs: any of the above reed switches
 - Firmware:
   For programming either use the platformio UI or any of the following CLI commands:
   - `pio run -t upload -e distance_v1` - PCB v2, STM32 L4
   - `pio run -t upload -e distance_v1_debug` - PCB v2, STM32 L4, debug
-- [3D Printed cage](cages/distance):
+- [3D Printed cage](cages/door):
   - ![Cage Preview TBD](pictures/TBD.jpg)
 - BUGS:
   - None so far
