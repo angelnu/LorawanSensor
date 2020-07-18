@@ -74,7 +74,9 @@ Used to detect when a car is parked in a parking lot.
   - `pio run -t upload -e distance_v1` - PCB v2, STM32 L4
   - `pio run -t upload -e distance_v1_debug` - PCB v2, STM32 L4, debug
 - [3D Printed cage](cages/distance):
-  - ![Cage Preview TBD](pictures/TBD.jpg)
+  - ![Cage Mount](pictures/DistanceSensor_v1_mount.jpg)
+  - ![PBC view](pictures/DistanceSensor_v1_overview.jpg)
+  - ![Mounted Cage](pictures/Parking_Lot_Sensor.jpg)
 - BUGS:
   - None so far
   
@@ -121,6 +123,7 @@ This sensor tracks the state (open/closed) of up to 4 doors or windows. It suppo
   - `pio run -t upload -e distance_v1` - PCB v2, STM32 L4
   - `pio run -t upload -e distance_v1_debug` - PCB v2, STM32 L4, debug
 - [3D Printed cage](cages/door):
-  - ![Cage Preview TBD](pictures/TBD.jpg)
+  - ![Mounted Cage view 1](pictures/post-mode_DoorSensor_v1_mount1.jpg)
+  - ![Mounted Sensor view 2](pictures/post-mode_DoorSensor_v1_mount2.jpg)
 - BUGS:
   - None so far
