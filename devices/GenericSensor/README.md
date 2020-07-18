@@ -56,7 +56,7 @@ Used to detect when a car is parked in a parking lot.
 - Sensor:
   - Lidar [vl53l1x](https://www.st.com/en/imaging-and-photonics-solutions/vl53l1x.html): consumption small enough to be powered through a PIN without a mosfet - not low power enough to keep power during deep sleep. It can measure up to 4 meters.
     - Used [Melopero board](https://www.melopero.com/shop/sensori/prossimita/melopero-vl53l1x-time-of-flight-long-distance-ranging-sensor-breakout/) since it was quickly available in Amazon
-    - Ordered some with cover from [China](https://www.ebay.de/itm/Laser-4M-50Hz-VL53L1X-I2C-Flight-Time-ToF-Ranging-Sensor-w-Optical-Cover)
+    - Ordered some with cover from [China](https://de.aliexpress.com/item/4000110308676.html)
 - Power consumption:
   - measurements: 1,5 mA, 120 ms, 1 measurement/minute
   - transmission: 120 mA, 50 ms, sending once/hour
