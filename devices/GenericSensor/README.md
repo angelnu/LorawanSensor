@@ -2,7 +2,7 @@
 
 This device exposed all available GPIOs from the 32 pin STM32 so external sensors can be attached. Multiple use cases are listed bellow.
 
-TBD picture overview installed
+- ![GenericSensor_PCB_full_view](pictures/GenericSensor_v1_1_PCB_full_view.jpg)
 
 ## Versions of the PCB
 
