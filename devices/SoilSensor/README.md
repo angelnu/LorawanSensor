@@ -2,7 +2,7 @@
 
 This device includes a capacitive sonde in the same PCB. The resulting device can measure the soil moisture without beeing corroded nor being affected by the temperature as the resistive soil sensors.
 
-TBD picture overview installed
+- ![Full mount SoilSensor](pictures/SoilSensor_v2_full_mount.jpg)
 
 ## Power cosumption
 
@@ -34,7 +34,7 @@ The above gives a theorical batery life of 47 years without auto-discharge. In r
 
 This is the (currently) final version without any unneded HW. It is optimised to make it easy to esamble with only the programing pins and the battery holder not being SMD components.
 
-TBD overview picture painted
+- ![Full mount SoilSensor v2](pictures/SoilSensor_v2_cage.jpg)
 
 - [Aisler PCB project](https://aisler.net/p/DFIQTREA)
 - [SoilSensor.sch](KiCad/SoilSensor_v2.sch)
@@ -62,7 +62,7 @@ TBD overview picture painted
 
 This was the first version on STM32. It has multiple debug options so more complex than needed. Battery is connected with Dupont cables.
 
-TBD overview picture painted
+- ![Full mount SoilSensor v1](pictures/SoilSensor_v1_cage.jpg)
 
 - [Aisler PCB project](https://aisler.net/p/FEKNZTQA)
 - [SoilSensor.sch](KiCad/SoilSensor.sch)
