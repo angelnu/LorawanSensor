@@ -63,6 +63,7 @@ void print_buildinfo();
 #define SENSOR_DOOR_2_CHANNEL 46
 #define SENSOR_DOOR_3_CHANNEL 47
 #define SENSOR_DOOR_4_CHANNEL 48
+#define SENSOR_GPS_CHANNEL 49
 
 //Sensor settings
 #if defined(ARDUINO_ARCH_AVR)
