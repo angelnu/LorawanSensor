@@ -82,4 +82,37 @@ void allInput()
   pinMode(PB7, INPUT_PULLDOWN);
 }
 
+
+float battery_v;
+float old_battery_v = 0;
+float temp_c;
+float old_temp_c = 0;
+bool measure_stm32() {
+  
+  uint32_t VRef = readVref();
+  battery_v = 1.0 * VRef / 1000;
+  temp_c = readTempSensor(VRef);
+
+  //Debug output
+  log_debug(F("BATTERY V: "));
+  log_debug_ln(battery_v, 3);
+  log_debug(F("TEMP C: "));
+  log_debug_ln(temp_c, 1);
+
+  //Find if it a value has changed enough
+  return (
+      (100.0*(abs(battery_v - old_battery_v) / MAX_VOLTAGE_V) >= device_config.device.min_percentage_v_2_send) ||
+      (100.0*(abs(temp_c - old_temp_c) / MAX_TEMP_C) >= device_config.device.min_percentage_t_2_send)
+    );
+}
+
+void send_stm32(CayenneLPP& lpp) { 
+  //Add measurements and remember last transmit
+  lpp.addDigitalInput(SENSOR_VERSION_CHANNEL, device_config.version);
+  lpp.addAnalogInput(SENSOR_BATTERY_CHANNEL, battery_v);
+  old_battery_v = battery_v;
+  lpp.addTemperature(SENSOR_TEMP_CHANNEL, temp_c);
+  old_temp_c = temp_c;
+}
+
 #endif

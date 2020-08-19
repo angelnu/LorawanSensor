@@ -109,7 +109,7 @@ void print_buildinfo();
 #define GIT_COMMIT_ID QUOTE(PIO_SRC_REV)
 
 //Lorawan
-#define USE_ADR 0
+#define USE_ADR 1
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
 #ifdef TX_INTERVAL

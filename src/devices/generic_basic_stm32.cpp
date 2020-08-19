@@ -1,6 +1,6 @@
 #ifdef SENSOR_GENERIC_BASIC_SMT32
 
-#include "common_stm32.h"
+#include "sensors/common_stm32.h"
 #include "sensor.h"
 
 #define DEFAULT_MIN_PERCENTAGE_V_2_SEND 1;

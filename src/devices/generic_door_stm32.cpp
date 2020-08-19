@@ -1,6 +1,6 @@
 #ifdef SENSOR_GENERIC_DOOR_SMT32
 
-#include "common_stm32.h"
+#include "sensors/common_stm32.h"
 #include "sensor.h"
 #include "sleep.h"
 

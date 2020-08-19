@@ -1,6 +1,6 @@
 #ifdef SENSOR_GENERIC_DISTANCE_SMT32
 
-#include "common_stm32.h"
+#include "sensors/common_stm32.h"
 #include "sensor.h"
 #include "sleep.h"
 #include <Wire.h>

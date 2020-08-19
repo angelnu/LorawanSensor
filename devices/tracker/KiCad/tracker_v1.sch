@@ -1003,7 +1003,7 @@ F 1 "AO3401A" H 8355 4055 50  0000 L CNN
 F 2 "Package_TO_SOT_SMD:SOT-23" H 8350 4025 50  0001 L CIN
 F 3 "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf" H 8150 4100 50  0001 L CNN
 	1    8150 4100
-	1    0    0    -1  
+	1    0    0    1   
 $EndComp
 $Comp
 L power:+3.3V #PWR0123

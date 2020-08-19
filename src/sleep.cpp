@@ -96,6 +96,10 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
     //  mode = SLEEP_MODE_DEEPSLEEP;
     if (mode==SLEEP_MODE_DEEPSLEEP) {
 
+      //Round the sleep time
+      if (sleepTime % 1000) sleepTime+=1000;
+      sleepTime = (sleepTime/1000)*1000;
+
       //remember start
       uint32_t start_ms=0;
       uint32_t startTime = rtc.getEpoch(&start_ms);

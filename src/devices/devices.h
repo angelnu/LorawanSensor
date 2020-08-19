@@ -40,13 +40,21 @@
     #define TX_INTERVAL 60*60
     #define DEFAULT_MAX_SKIPED_MEASUREMENTS 24
 #elif defined(SENSOR_GENERIC_TRACKER_SMT32)
-    #define DEVICE_CONFIG_VERSION 1
+    #define DEVICE_CONFIG_VERSION 2
     struct device_config_device_t {
         //door sensor
         uint8_t min_percentage_v_2_send;
         uint8_t min_percentage_t_2_send;
         uint8_t min_percentage_distance_2_send;
+        uint8_t unused;
+        int16_t distance_offsset;
     };
+    #define SENSOR_GPS_UBLOCK
+    //#define SENSOR_LIDAR_VL53L1X_POLOLU
+    #define SENSOR_LIDAR_VL53L1X_SPARFUNK
+    #define SENSOR_LIDAR_VL53L1X_SHORT
+    //#define SENSOR_LIDAR_VL53L1X_MEDIUM
+    #define SENSOR_ACCELEROMETER_LIS3DH
 #else
     #error "Unkown device type"
 #endif

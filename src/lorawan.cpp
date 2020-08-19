@@ -71,6 +71,7 @@ void lorawan_setup() {
 
   // LMIC init
   os_init();
+  delay(1000);
   // Reset the MAC state. Session and pending data transfers will be discarded.
   LMIC_reset();
 
