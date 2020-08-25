@@ -1,73 +1,98 @@
 #include "config.h"
 #ifdef SENSOR_LIDAR_VL53L1X_SPARFUNK
 
-#include "lidar_VL53L1X.h"
+#include "sensor.h"
 #include <Wire.h>
 #include <ComponentObject.h>
 #include <RangeSensor.h>
 #include <SparkFun_VL53L1X.h>
 #include <vl53l1x_class.h>
 #include <vl53l1_error_codes.h>
+class Sensor_lidar: Sensor{
+    private:
+        void set_config(device_config_device_t& specific_device_config) override;
+        void init (bool firstTime) override;
+        bool measure_intern() override;
+        void send(CayenneLPP& lpp) override;
+        void stop () override;
 
-SFEVL53L1X distanceSensor;
+        SFEVL53L1X ivLidar;
 
-void init_lidar(bool firstTime){
-  if (firstTime) log_debug_ln("Init lidar VL53L1X");
+        float distance_dm;
+        float old_distance_dm = 0;
+        float peak_signal_mcps;
+        float old_peak_signal_mcps=0;
+        float ambient_light_mcps;
+        float old_ambient_light_mcps=0;
+};
+static Sensor_lidar sensor;
+
+#define DEFAULT_MIN_PERCENTAGE_DISTANCE_2_SEND 5;
+#define LIDAR_MAX_DISTANCE_DM 40.00
+#define DEFAULT_DISTANCE_OFFSET 100
+
+void Sensor_lidar::set_config(device_config_device_t& specific_device_config) {
+  specific_device_config.min_percentage_distance_2_send = DEFAULT_MIN_PERCENTAGE_DISTANCE_2_SEND;
+  specific_device_config.distance_offset = DEFAULT_DISTANCE_OFFSET;
+}
+
+
+
+
+
+void Sensor_lidar::init(bool firstTime){
+  //if (firstTime)
+  log_debug_ln("Init lidar VL53L1X");
   pinMode(PIN_LIDAR_POWER, OUTPUT);
   digitalWrite(PIN_LIDAR_POWER, HIGH);
   delay(2);
 
-  if (distanceSensor.begin() != 0)
+  if (ivLidar.begin() != 0)
   {
     Serial.println("Failed to init lidar VL53L1X!");
     while (1);
   }
   #if defined(SENSOR_LIDAR_VL53L1X_SHORT)
-    distanceSensor.setDistanceModeShort();
+    ivLidar.setDistanceModeShort();
   #elif defined(SENSOR_LIDAR_VL53L1X_MEDIUM)
-    distanceSensor.setDistanceModeMedium();
+    ivLidar.setDistanceModeLong();
   #else //Default = long range mode
-    distanceSensor.setDistanceModeLong();
+    ivLidar.setDistanceModeLong();
   #endif
-  distanceSensor.setOffset(device_config.device.distance_offsset);
-  distanceSensor.startRanging();
+  ivLidar.setOffset(device_config.device.distance_offset);
+  ivLidar.startRanging();
 
 }
-void stop_lidar(){
+void Sensor_lidar::stop(){
 
   digitalWrite(PIN_LIDAR_POWER, LOW);
 }
 
 
-float distance_dm;
-float old_distance_dm = 0;
-float peak_signal_mcps;
-float old_peak_signal_mcps=0;
-float ambient_light_mcps;
-float old_ambient_light_mcps=0;
-bool measure_lidar() {
-  while (!distanceSensor.checkForDataReady())
+
+bool Sensor_lidar::measure_intern() {
+  while (!ivLidar.checkForDataReady())
   {
     delay(1);
   }
-  uint16_t distance_raw_mm = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
-  peak_signal_mcps = distanceSensor.getSignalRate();
-  ambient_light_mcps = distanceSensor.getAmbientRate();
-  distanceSensor.clearInterrupt();
+  uint16_t distance_raw_mm = ivLidar.getDistance(); //Get the result of the measurement from the sensor
+  peak_signal_mcps = ivLidar.getSignalRate();
+  ambient_light_mcps = ivLidar.getAmbientRate();
+  ivLidar.clearInterrupt();
 
-  distanceSensor.stopRanging();
+  ivLidar.stopRanging();
 
   //Adjust distances
   distance_dm = 0.01 * distance_raw_mm; //Use dm to use at best the 2 decimals in Cayene analog
   log_debug(F("Range status: "));
-  log_debug_ln(distanceSensor.getRangeStatus());
+  log_debug_ln(ivLidar.getRangeStatus());
   if (distance_dm > LIDAR_MAX_DISTANCE_DM)
     distance_dm = LIDAR_MAX_DISTANCE_DM;
-  switch(distanceSensor.getRangeStatus()){
+  switch(ivLidar.getRangeStatus()){
     case 0:
       break;
     default:
-     distance_dm = -distanceSensor.getRangeStatus();
+     distance_dm = -ivLidar.getRangeStatus();
   }
 
   //Debug output
@@ -86,7 +111,7 @@ bool measure_lidar() {
      );
 }
 
-void send_lidar(CayenneLPP& lpp) { 
+void Sensor_lidar::send(CayenneLPP& lpp) { 
   //Add measurements and remember last transmit
   lpp.addAnalogInput(SENSOR_DISTANCE_CHANNEL, distance_dm);
   old_distance_dm = distance_dm;

@@ -1,36 +1,50 @@
 #include "config.h"
 #ifdef SENSOR_GPS_UBLOCK
-#include "gps_ublock.h"
-#include <Wire.h>
+
+#include "sensor.h"
 #include "SparkFun_Ublox_Arduino_Library.h" //http://librarymanager/All#SparkFun_Ublox_GPS
 #include "IWatchdog.h"
+class Sensor_gps: Sensor{
+    private:
+        //void set_config(device_config_device_t& specific_device_config) override;
+        void init (bool firstTime) override;
+        bool measure_intern() override;
+        void send(CayenneLPP& lpp) override;
+        void stop () override;
 
+        SFE_UBLOX_GPS ivGPS;
+        struct minfoStructure // Structure to hold the module info (uses 341 bytes of RAM)
+        {
+            char swVersion[30];
+            char hwVersion[10];
+            uint8_t extensionNo = 0;
+            char extension[10][30];
+        } minfo;
 
-// Extend the class for getModuleInfo
-class SFE_UBLOX_GPS_ADD : public SFE_UBLOX_GPS
-{
-public:
-    bool getModuleInfo(uint16_t maxWait = 1100); //Queries module, texts
+        float latitude_d;
+        float old_latitude_d = 0;
+        float longitude_d;
+        float old_longitude_d=0;
+        float altitude_m;
+        float old_altitude_m=0;
+        byte SIV;
+        byte old_SIV=0;
 
-    struct minfoStructure // Structure to hold the module info (uses 341 bytes of RAM)
-    {
-        char swVersion[30];
-        char hwVersion[10];
-        uint8_t extensionNo = 0;
-        char extension[10][30];
-    } minfo;
+        int wait_for_pos(size_t timeout_s, size_t satelites=GPS_MIN_SATELITES);
+        bool getModuleInfo(uint16_t maxWait = 1100); //Queries module, texts
 };
-SFE_UBLOX_GPS_ADD myGPS;
-SFE_UBLOX_GPS& getGPS() {
-    return myGPS;
-}
+static Sensor_gps sensor;
 
-int wait_for_pos(size_t timeout_s, size_t satelites=3) {
+
+
+
+
+int Sensor_gps::wait_for_pos(size_t timeout_s, size_t satelites) {
     //Wait for reception
-    while (getGPS().getSIV() < satelites) {
+    while (ivGPS.getSIV() < satelites) {
         log_info(timeout_s);
         log_info(F(" - Waiting for SIV: currently "));
-        log_info_ln(getGPS().getSIV());
+        log_info_ln(ivGPS.getSIV());
         #ifdef PIN_STATUS_LED
             pinMode(PIN_STATUS_LED, OUTPUT);
             digitalWrite(PIN_STATUS_LED, HIGH);
@@ -52,36 +66,35 @@ int wait_for_pos(size_t timeout_s, size_t satelites=3) {
         }
     }
     log_debug(F("Detected satelites: "));
-    log_debug_ln(getGPS().getSIV());
+    log_debug_ln(ivGPS.getSIV());
     return 0;
 }
 
 
 
-long lastTime = 0; //Simple local timer. Limits amount if I2C traffic to Ublox module.
-void init_gps(bool firstTime) {
+void Sensor_gps::init(bool firstTime) {
 
-  pinMode(PIN_GPS_POWER, INPUT_PULLDOWN);
-  
-  pinMode(PIN_GPS_BAT_POWER, OUTPUT);
-  digitalWrite(PIN_GPS_BAT_POWER, HIGH);
-  delay(1000);
-  
-  if (myGPS.begin() == false) //Connect to the Ublox module using Wire port
-  {
-    log_error_ln(F("Ublox GPS not detected."));
-    while (1);
-  }
+    pinMode(PIN_GPS_POWER, INPUT_PULLDOWN);
+    
+    pinMode(PIN_GPS_BAT_POWER, OUTPUT);
+    digitalWrite(PIN_GPS_BAT_POWER, HIGH);
+    delay(1000);
+    
+    if (ivGPS.begin() == false) //Connect to the Ublox module using Wire port
+    {
+        log_error_ln(F("Ublox GPS not detected."));
+        while (1);
+    }
 
-  myGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
-  //myGPS.setNMEAOutputPort(Serial);
-  //myGPS.saveConfiguration(); //Save the current settings to flash and BBR
+    ivGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
+    //myGPS.setNMEAOutputPort(Serial);
+    //myGPS.saveConfiguration(); //Save the current settings to flash and BBR
 
   
     if (firstTime) {
         log_info_ln(F("GPS ublock found!"));
         //Print module info
-        if (myGPS.getModuleInfo(1100) == false) // Try to get the module info
+        if (getModuleInfo(1100) == false) // Try to get the module info
         {
             log_error_ln(F("getModuleInfo failed! Freezing..."));
             while (1)
@@ -91,15 +104,15 @@ void init_gps(bool firstTime) {
         log_info_ln();
         log_info_ln(F("GPS Module Info : "));
         log_info(F("Soft version: "));
-        log_info_ln(myGPS.minfo.swVersion);
+        log_info_ln(minfo.swVersion);
         log_info(F("Hard version: "));
-        log_info_ln(myGPS.minfo.hwVersion);
+        log_info_ln(minfo.hwVersion);
         log_info(F("Extensions:"));
-        log_info_ln(myGPS.minfo.extensionNo);
-        for (int i = 0; i < myGPS.minfo.extensionNo; i++)
+        log_info_ln(minfo.extensionNo);
+        for (int i = 0; i < minfo.extensionNo; i++)
         {
             log_info("  ");
-            log_info_ln(myGPS.minfo.extension[i]);
+            log_info_ln(minfo.extension[i]);
         }
         log_info_ln();
     }
@@ -113,27 +126,19 @@ void init_gps(bool firstTime) {
     
 }
 
-void stop_gps() {
+void Sensor_gps::stop() {
 
   pinMode(PIN_GPS_POWER, INPUT_PULLUP);
 
 }
 
-float latitude_d;
-float old_latitude_d = 0;
-float longitude_d;
-float old_longitude_d=0;
-float altitude_m;
-float old_altitude_m=0;
-byte SIV;
-byte old_SIV=0;
-bool measure_gps() {
+bool Sensor_gps::measure_intern() {
 
-  myGPS.checkUblox();
-  latitude_d  = 0.0000001 * myGPS.getLatitude();
-  longitude_d = 0.0000001 * myGPS.getLongitude();
-  altitude_m  = 0.001 * myGPS.getAltitude();
-  SIV = myGPS.getSIV();
+  ivGPS.checkUblox();
+  latitude_d  = 0.0000001 * ivGPS.getLatitude();
+  longitude_d = 0.0000001 * ivGPS.getLongitude();
+  altitude_m  = 0.001 * ivGPS.getAltitude();
+  SIV = ivGPS.getSIV();
 
   //Debug output
   log_debug(F("Lat (degrees):  "));
@@ -151,23 +156,25 @@ bool measure_gps() {
      );
 }
 
-void send_gps(CayenneLPP& lpp) { 
+void Sensor_gps::send(CayenneLPP& lpp) { 
   //Add measurements and remember last transmit
-  lpp.addGPS(SENSOR_GPS_CHANNEL, latitude_d, longitude_d, altitude_m);
+  if (SIV >= GPS_MIN_SATELITES) {
+      lpp.addGPS(SENSOR_GPS_POS_CHANNEL, latitude_d, longitude_d, altitude_m);
+  }
   old_latitude_d = latitude_d;
   old_longitude_d = longitude_d;
   old_altitude_m = altitude_m;
+  lpp.addDigitalInput(SENSOR_GPS_SIV_CHANNEL, SIV);
   old_SIV = SIV;
 }
 
-
-bool SFE_UBLOX_GPS_ADD::getModuleInfo(uint16_t maxWait)
+bool Sensor_gps::getModuleInfo(uint16_t maxWait)
 {
-    myGPS.minfo.hwVersion[0] = 0;
-    myGPS.minfo.swVersion[0] = 0;
+    minfo.hwVersion[0] = 0;
+    minfo.swVersion[0] = 0;
     for (int i = 0; i < 10; i++)
-        myGPS.minfo.extension[i][0] = 0;
-    myGPS.minfo.extensionNo = 0;
+        minfo.extension[i][0] = 0;
+    minfo.extensionNo = 0;
 
     // Let's create our custom packet
     uint8_t customPayload[MAX_PAYLOAD_SIZE]; // This array holds the payload data bytes
@@ -203,7 +210,7 @@ bool SFE_UBLOX_GPS_ADD::getModuleInfo(uint16_t maxWait)
 
     // Now let's send the command. The module info is returned in customPayload
 
-    if (sendCommand(&customCfg, maxWait) != SFE_UBLOX_STATUS_DATA_RECEIVED)
+    if (ivGPS.sendCommand(&customCfg, maxWait) != SFE_UBLOX_STATUS_DATA_RECEIVED)
         return (false); //If command send fails then bail
 
     // Now let's extract the module info from customPayload

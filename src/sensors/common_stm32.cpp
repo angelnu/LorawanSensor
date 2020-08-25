@@ -1,19 +1,37 @@
 #if defined(ARDUINO_ARCH_STM32)
 
-#include "common_stm32.h"
 #include "sensor.h"
+class Common_stm32_sensor: Sensor{
+    private:
+        void set_config(device_config_device_t& specific_device_config) override;
+        bool measure_intern() override;
+        void send(CayenneLPP& lpp) override;
+
+        float battery_v;
+        float old_battery_v = 0;
+        float temp_c;
+        float old_temp_c = 0;
+
+        uint32_t readVref();
+        float readTempSensor(int32_t VRef);
+
+};
+static Common_stm32_sensor sensor;
 
 #define ADC_RANGE (1<<ADC_RESOLUTION)
+#define DEFAULT_MIN_PERCENTAGE_V_2_SEND 1;
+#define MAX_VOLTAGE_V 3.3
+#define DEFAULT_MIN_PERCENTAGE_T_2_SEND 10;
+#define MAX_TEMP_C 100.0
 
-// Average
-uint32_t averageAnalogInput(uint32_t pin, uint8_t measurements) {
-  uint32_t total = 0;
-  for (uint8_t i=0; i<measurements; i++){
-    total += analogRead(pin);
-  }
-  return total / measurements;
-
+void Common_stm32_sensor::set_config(device_config_device_t& specific_device_config){
+    specific_device_config.min_percentage_v_2_send = DEFAULT_MIN_PERCENTAGE_V_2_SEND;
+    specific_device_config.min_percentage_t_2_send = DEFAULT_MIN_PERCENTAGE_T_2_SEND;
 }
+
+
+
+
 
 // VREF
 
@@ -22,9 +40,9 @@ const uint16_t* const ADC_VREFINT_3V0_30C =  reinterpret_cast<uint16_t*>(ADC_VRE
 const uint32_t CALIBRATION_REFERENCE_VOLTAGE = 3000;
 const float VREFINT = CALIBRATION_REFERENCE_VOLTAGE * (*ADC_VREFINT_3V0_30C) / ADC_RANGE;
 
-uint32_t readVref()
+uint32_t Common_stm32_sensor::readVref()
 {
-  return (VREFINT * ADC_RANGE / averageAnalogInput(AVREF, device_config.measure_average)); // ADC sample to mV
+    return (VREFINT * ADC_RANGE / averageAnalogInput(AVREF, device_config.measure_average)); // ADC sample to mV
 }
 
 
@@ -35,59 +53,24 @@ uint32_t readVref()
     const uint16_t* const ADC_TEMP_3V0_130C =  reinterpret_cast<uint16_t*>(ADC_TEMP_3V0_130C_ADDR);
 
 
-    float readTempSensor(int32_t VRef)
+    float Common_stm32_sensor::readTempSensor(int32_t VRef)
     {
-    // scale constants to current reference voltage
-    float adcCalTemp30C = static_cast<float>(*ADC_TEMP_3V0_30C);
-    float adcCalTemp130C = static_cast<float>(*ADC_TEMP_3V0_130C);
+        // scale constants to current reference voltage
+        float adcCalTemp30C = static_cast<float>(*ADC_TEMP_3V0_30C);
+        float adcCalTemp130C = static_cast<float>(*ADC_TEMP_3V0_130C);
 
-    //Read and convert to calibration value
-    float adcTempValue = 1.0 * averageAnalogInput(ATEMP, device_config.measure_average) * VRef / CALIBRATION_REFERENCE_VOLTAGE;
+        //Read and convert to calibration value
+        float adcTempValue = 1.0 * averageAnalogInput(ATEMP, device_config.measure_average) * VRef / CALIBRATION_REFERENCE_VOLTAGE;
 
-    return (adcTempValue - adcCalTemp30C)/(adcCalTemp130C - adcCalTemp30C) * (130.0 - 30.0) + 30.0;
+        return (adcTempValue - adcCalTemp30C)/(adcCalTemp130C - adcCalTemp30C) * (130.0 - 30.0) + 30.0;
     }
 #else
-  float readTempSensor(int32_t VRef) {return 0;}
+    float Common_stm32_sensor::readTempSensor(int32_t VRef) {return 0;}
 #endif
 
 
-void allInput()
-{
-  pinMode(PA0, INPUT_PULLDOWN);
-  pinMode(PA1, INPUT_PULLDOWN);
-  //Serial port
-  //pinMode(PA2, INPUT_PULLDOWN);
-  //pinMode(PA3, INPUT_PULLDOWN);
-  pinMode(PA4, INPUT_PULLDOWN);
-  pinMode(PA5, INPUT_PULLDOWN);
-  pinMode(PA6, INPUT_PULLDOWN);
-  pinMode(PA7, INPUT_PULLDOWN);
-  pinMode(PA8, INPUT_PULLDOWN);
-  pinMode(PA9, INPUT_PULLDOWN);
-  pinMode(PA10, INPUT_PULLDOWN);
-  
-  pinMode(PA11, INPUT_PULLDOWN);
-  pinMode(PA12, INPUT_PULLDOWN);
-  //WSI port
-  //pinMode(PA13, INPUT_PULLDOWN);
-  //pinMode(PA14, INPUT_PULLDOWN);
-  pinMode(PA15, INPUT_PULLDOWN);
 
-  pinMode(PB0, INPUT_PULLDOWN);
-  pinMode(PB1, INPUT_PULLDOWN);
-  pinMode(PB3, INPUT_PULLDOWN);
-  pinMode(PB4, INPUT_PULLDOWN);
-  pinMode(PB5, INPUT_PULLDOWN);
-  pinMode(PB6, INPUT_PULLDOWN);
-  pinMode(PB7, INPUT_PULLDOWN);
-}
-
-
-float battery_v;
-float old_battery_v = 0;
-float temp_c;
-float old_temp_c = 0;
-bool measure_stm32() {
+bool Common_stm32_sensor::measure_intern() {
   
   uint32_t VRef = readVref();
   battery_v = 1.0 * VRef / 1000;
@@ -106,7 +89,7 @@ bool measure_stm32() {
     );
 }
 
-void send_stm32(CayenneLPP& lpp) { 
+void Common_stm32_sensor::send(CayenneLPP& lpp) { 
   //Add measurements and remember last transmit
   lpp.addDigitalInput(SENSOR_VERSION_CHANNEL, device_config.version);
   lpp.addAnalogInput(SENSOR_BATTERY_CHANNEL, battery_v);

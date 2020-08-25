@@ -2,8 +2,10 @@
 #include "sleep.h"
 #include "lorawan.h"
 #include "sensor.h"
-#include "STM32LowPower.h"
+//#include "STM32LowPower.h"
+#ifdef IWDG_TIME_S
 #include "IWatchdog.h"
+#endif
 
 void setup() {
 
@@ -43,7 +45,7 @@ void setup() {
     init_device_config();
     print_buildinfo();
     
-    sensor_setup();
+    Sensors::setup();
     #ifdef PIN_STATUS_LED
       pinMode(PIN_STATUS_LED, OUTPUT);
       digitalWrite(PIN_STATUS_LED, HIGH);
@@ -70,7 +72,7 @@ void loop_work() {
     lorawan_resume();
     
     //Measure
-    bool mustSend = sensor_measure(lpp);
+    bool mustSend = Sensors::measure(lpp);
 
     // Start job (sending automatically starts OTAA too)
     if (mustSend) lorawan_send(lpp.getBuffer(), lpp.getSize());

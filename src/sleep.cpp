@@ -13,7 +13,12 @@ void sleep_setup() {
 #if defined(ARDUINO_ARCH_STM32)
 
   STM32RTC& rtc = STM32RTC::getInstance();
-  rtc.setClockSource(STM32RTC::LSE_CLOCK);
+  #ifdef LSE_CLOCK_ENABLED
+    log_debug_ln(F("Low Speed External clock source"));
+    rtc.setClockSource(STM32RTC::LSE_CLOCK);
+  #else
+    log_debug_ln(F("Default clock source"));
+  #endif
   rtc.begin();
   
   LowPower.begin();
@@ -97,8 +102,8 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
     if (mode==SLEEP_MODE_DEEPSLEEP) {
 
       //Round the sleep time
-      if (sleepTime % 1000) sleepTime+=1000;
-      sleepTime = (sleepTime/1000)*1000;
+      //if (sleepTime % 1000) sleepTime+=1000;
+      //sleepTime = (sleepTime/1000)*1000;
 
       //remember start
       uint32_t start_ms=0;

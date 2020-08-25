@@ -232,10 +232,12 @@ void lorawan_process_command() {
     lorawan_send((uint8_t*)(&device_config), sizeof(device_config));
     break;
   
+  #ifdef UID_BASE
   case 0x05:
     log_debug_ln(F("SENDING DEV UID"));
     lorawan_send((uint8_t*)UID_BASE, UID_BYTES_LENGTH);
     break;
+  #endif
   
   case 0x06:
     log_debug_ln(F("SENDING GIT COMMIT"));
