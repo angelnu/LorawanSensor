@@ -11,12 +11,12 @@ In this version a distance sensor is also used to measure the gasoil level in a 
 This is Work In Progress - Firmware not ready and PCB not tested yet.
 
 - [Aisler PCB project](https://aisler.net/p/XNCQBQQY)
-- [SoilSensor.sch](KiCad/tracker_v1.sch)
+- [Tracker.sch](KiCad/tracker_v1.sch)
   - ![Schematics Preview](pictures/tracker_v1_schematics.png)
   - ![PCB Overview](pictures/Tracker_v1_overview.jpg)
   - ![PCB Close View Front](pictures/Tracker_v1_PCB_close_view_front.jpg)
   - ![PCB Close View Rear](pictures/Tracker_v1_PCB_close_view_rear.jpg)
-- [SoilSensor.kicad_pcb](KiCad/tracker_v1.kicad_pcb)
+- [Traker.kicad_pcb](KiCad/tracker_v1.kicad_pcb)
 - Sensor:
   - GPS [ublox_SAM-M8Q](https://www.u-blox.com/en/product/sam-m8q-module)
     - low-power: 15 uA to keep memory and clock - most important factor for battery life
