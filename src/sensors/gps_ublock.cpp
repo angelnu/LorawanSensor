@@ -1,6 +1,10 @@
 #include "config.h"
 #ifdef SENSOR_GPS_UBLOCK
 
+#ifndef GPS_MIN_SATELITES
+  #define GPS_MIN_SATELITES 4
+#endif
+
 #include "sensor.h"
 #include "SparkFun_Ublox_Arduino_Library.h" //http://librarymanager/All#SparkFun_Ublox_GPS
 #include "IWatchdog.h"
