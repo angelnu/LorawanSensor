@@ -98,10 +98,10 @@ bool Sensors::measure(CayenneLPP& lpp){
         }
     } else {
 
-        //Reset counter on interrupt to filter int noise
-        if (is_skip_sleep()) skippedMeasurements=0;
-
-        skippedMeasurements ++;
+        //only count skipped in regular mode
+        if (! is_fast_sleep() ){
+            skippedMeasurements ++;
+        }
 
         log_debug(F("Skipped sending measurement: "));
         log_debug_ln(skippedMeasurements);

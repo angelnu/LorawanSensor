@@ -66,8 +66,11 @@ class Sensor {
         bool iv_ready;
 
         //Methods to override
+        //Called after sleep or when the device starts
         virtual void init (bool firstTime) {};
+        //Prepare data to send. Returns if the data is worth sensing (different enough)
         virtual bool measure_intern() {return false;};
+        //Prepare to ssleep
         virtual void stop () {};
 
     protected:

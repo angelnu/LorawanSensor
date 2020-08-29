@@ -141,15 +141,15 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
 
 }
 
-bool __skip_sleep=false;
-void skip_sleep() { __skip_sleep = true;}
-bool is_skip_sleep() { return __skip_sleep;};
-void reset_skip_sleep() { __skip_sleep = false;}
-
+static uint32_t requested_loop_time_ms;
+static uint32_t next_loop_time_ms;
 void loop_periodically(uint32_t ms, void (&loop_work)()){
 
   //Time before work
   unsigned long timeBeforeSending = millis();
+
+  //By default sleep requested time at least changed with fast_sleep()
+  requested_loop_time_ms = next_loop_time_ms = ms;
 
   loop_work();
 
@@ -157,14 +157,30 @@ void loop_periodically(uint32_t ms, void (&loop_work)()){
   unsigned long timeAfterSending = millis();
 
   // go to sleep
-  if ((!is_skip_sleep()) && ms > (timeAfterSending - timeBeforeSending)) {
-    do_sleep(ms - (timeAfterSending - timeBeforeSending));  // sleep minus elapsed time
+  if ((!is_skip_sleep()) && next_loop_time_ms > (timeAfterSending - timeBeforeSending)) {
+    do_sleep(next_loop_time_ms - (timeAfterSending - timeBeforeSending));  // sleep minus elapsed time
   } else {
     if (is_skip_sleep()) {
       log_debug_ln(F("Skipped sleep by request"));
-      reset_skip_sleep();
     } else {
       log_warning_ln(F("Long loop -> skipped sleep"));
     }
   }
 };
+
+void fast_sleep(uint32_t ms) {
+  //Keep smallest
+  if (ms < next_loop_time_ms) next_loop_time_ms = ms;
+}
+bool is_fast_sleep() {
+  return (requested_loop_time_ms != next_loop_time_ms);
+}
+uint32_t next_sleep_time() {
+  return next_loop_time_ms;
+}
+void skip_sleep() {
+  fast_sleep(0);
+}
+bool is_skip_sleep() {
+  return (next_sleep_time() == 0);
+}
