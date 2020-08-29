@@ -1,5 +1,6 @@
 #include "config.h"
 #include "EEPROM.h"
+#include "sensor.h"
 
 #define LORAWAN_KEYS_ADDRESS 0x0
 #define CONFIG_ADDRESS 0x20
@@ -41,7 +42,7 @@ void init_device_config(bool reset) {
         device_config_new.measure_interval_s = TX_INTERVAL;
         device_config_new.measure_average = DEFAULT_AVERAGE_MEASUREMENTS;
         device_config_new.max_skiped_measurements = DEFAULT_MAX_SKIPED_MEASUREMENTS;
-        set_device_specific_config(device_config_new.device);
+        Sensors::set_config(device_config_new.device);
     }
     device_config_new.version = DEVICE_VERSION;
     write_device_config(device_config_new);
@@ -65,8 +66,10 @@ void print_buildinfo() {
         log_info_ln(DEVICE_VERSION);
     log_info(F("DEVICE CONFIG: "));
         print_hex_mem((uint8_t*)&device_config, sizeof(device_config));
+    #ifdef UID_BASE
     log_info(F("Device UID: "));
         print_hex_mem((uint8_t*)UID_BASE, UID_BYTES_LENGTH);
+    #endif
     log_info(F("BUILD DATE: "));
         log_info_ln(__DATE__);
     log_info(F("BUILD TIME: "));

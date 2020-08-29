@@ -2,7 +2,7 @@
 #define config_h
 
 #include "arduino.h"
-#include "devices/devices.h"
+#include "devices.h"
 
 //Device config
 
@@ -63,6 +63,8 @@ void print_buildinfo();
 #define SENSOR_DOOR_2_CHANNEL 46
 #define SENSOR_DOOR_3_CHANNEL 47
 #define SENSOR_DOOR_4_CHANNEL 48
+#define SENSOR_GPS_POS_CHANNEL 49
+#define SENSOR_GPS_SIV_CHANNEL 50
 
 //Sensor settings
 #if defined(ARDUINO_ARCH_AVR)
@@ -107,8 +109,12 @@ void print_buildinfo();
 #define QUOTE(x) Q(x)
 #define GIT_COMMIT_ID QUOTE(PIO_SRC_REV)
 
+#ifndef UNUSED
+  #define UNUSED(x) x=x
+#endif
+
 //Lorawan
-#define USE_ADR 0
+#define USE_ADR 1
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
 #ifdef TX_INTERVAL
