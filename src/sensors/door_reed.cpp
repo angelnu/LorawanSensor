@@ -31,25 +31,25 @@ class Sensor_door: Sensor{
 
 #define UNUSED_PIN 0xFFFFFFFF
 #ifdef PIN_DOOR_1
-    #ifdef PIN_DOOR_1_RESET
+    #ifndef PIN_DOOR_1_RESET
         #define PIN_DOOR_1_RESET UNUSED_PIN
     #endif
     static Sensor_door sensor_1 = Sensor_door(SENSOR_DOOR_1_CHANNEL, PIN_DOOR_1, PIN_DOOR_1_RESET);
 #endif
 #ifdef PIN_DOOR_2
-    #ifdef PIN_DOOR_2_RESET
+    #ifndef PIN_DOOR_2_RESET
         #define PIN_DOOR_2_RESET UNUSED_PIN
     #endif
     static Sensor_door sensor_2 = Sensor_door(SENSOR_DOOR_2_CHANNEL, PIN_DOOR_2, PIN_DOOR_2_RESET);
 #endif
 #ifdef PIN_DOOR_3
-    #ifdef PIN_DOOR_3_RESET
+    #ifndef PIN_DOOR_3_RESET
         #define PIN_DOOR_3_RESET UNUSED_PIN
     #endif
     static Sensor_door sensor_3 = Sensor_door(SENSOR_DOOR_3_CHANNEL, PIN_DOOR_3, PIN_DOOR_3_RESET);
 #endif
 #ifdef PIN_DOOR_4
-    #ifdef PIN_DOOR_4_RESET
+    #ifndef PIN_DOOR_4_RESET
         #define PIN_DOOR_4_RESET UNUSED_PIN
     #endif
     static Sensor_door sensor_4 = Sensor_door(SENSOR_DOOR_4_CHANNEL, PIN_DOOR_4, PIN_DOOR_4_RESET);

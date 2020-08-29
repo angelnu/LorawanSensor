@@ -45,8 +45,9 @@
         uint8_t min_percentage_t_2_send;
     };
     #define SENSOR_DOOR_REED
-    #define TX_INTERVAL 60
-    #define DEFAULT_MAX_SKIPED_MEASUREMENTS 3
+    //send each 6 hours
+    #define TX_INTERVAL 3600
+    #define DEFAULT_MAX_SKIPED_MEASUREMENTS 6
 #elif defined(SENSOR_GENERIC_TRACKER_SMT32)
     #define DEVICE_CONFIG_VERSION 2
     struct device_config_device_t {
