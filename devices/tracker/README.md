@@ -2,7 +2,7 @@
 
 This is a GPS tracker including a move sensor and a distance sensor (not in the PCB). It also routes most of the MCU pins to a connector so additional sensors might be connected.
 
-TBD picture overview installed
+- ![Full mount Tracker v1](pictures/Tracker_v1_full_view.jpg)
 
 ## Tracker v1 (WIP)
 
@@ -11,9 +11,12 @@ In this version a distance sensor is also used to measure the gasoil level in a 
 This is Work In Progress - Firmware not ready and PCB not tested yet.
 
 - [Aisler PCB project](https://aisler.net/p/XNCQBQQY)
-- [SoilSensor.sch](KiCad/tracker_v1.sch)
+- [Tracker.sch](KiCad/tracker_v1.sch)
   - ![Schematics Preview](pictures/tracker_v1_schematics.png)
-- [SoilSensor.kicad_pcb](KiCad/tracker_v1.kicad_pcb)
+  - ![PCB Overview](pictures/Tracker_v1_overview.jpg)
+  - ![PCB Close View Front](pictures/Tracker_v1_PCB_close_view_front.jpg)
+  - ![PCB Close View Rear](pictures/Tracker_v1_PCB_close_view_rear.jpg)
+- [Traker.kicad_pcb](KiCad/tracker_v1.kicad_pcb)
 - Sensor:
   - GPS [ublox_SAM-M8Q](https://www.u-blox.com/en/product/sam-m8q-module)
     - low-power: 15 uA to keep memory and clock - most important factor for battery life
@@ -43,7 +46,11 @@ This is Work In Progress - Firmware not ready and PCB not tested yet.
   For programming either use the platformio UI or any of the following CLI commands:
   - `pio run -t upload -e tracker_v1` - PCB v2, STM32 L4
   - `pio run -t upload -e tracker_v1_debug` - PCB v2, STM32 L4, debug
-- [3D Printed cage](cages):
-  - TBD
+- [3D Printed cage](cage):
+  - ![PCB Mount](pictures/Tracker_v1_PCB_mount.jpg)
+  - ![Lidar Mount](pictures/Tracker_v1_Lidar_mount.jpg)
+  - ![Cage Preview](pictures/Tracker_v1_cage.jpg)
+  - ![Cage Lid Front](pictures/Tracker_v1_lid_front.jpg)
+  - ![Cage Lid Rear](pictures/Tracker_v1_lid_rear.jpg)
 - BUGS:
   - None so far
