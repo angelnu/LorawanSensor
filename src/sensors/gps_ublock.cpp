@@ -4,13 +4,15 @@
 #ifndef GPS_MIN_SATELITES
   #define GPS_MIN_SATELITES 4
 #endif
+static const uint8_t DEFAULT_MIN_POSSITION_CHANGE_MG_2_SEND=10;
+static const uint8_t DEFAULT_MIN_ALTITUDE_CHANGE_M_2_SEND=10;
 
 #include "sensor.h"
 #include "SparkFun_Ublox_Arduino_Library.h" //http://librarymanager/All#SparkFun_Ublox_GPS
 #include "IWatchdog.h"
 class Sensor_gps: Sensor{
     private:
-        //void set_config(device_config_device_t& specific_device_config) override;
+        void set_config(device_config_device_t& specific_device_config) override;
         void init (bool firstTime) override;
         bool measure_intern() override;
         void send(CayenneLPP& lpp) override;
@@ -25,12 +27,14 @@ class Sensor_gps: Sensor{
             char extension[10][30];
         } minfo;
 
-        float latitude_d;
-        float old_latitude_d = 0;
-        float longitude_d;
-        float old_longitude_d=0;
-        float altitude_m;
-        float old_altitude_m=0;
+        struct possition_t {
+            float latitude_d;
+            float longitude_d;
+            float altitude_m;
+        };
+        possition_t possition = {0};
+        possition_t old_possition = {0};
+
         byte SIV;
         byte old_SIV=0;
 
@@ -40,7 +44,10 @@ class Sensor_gps: Sensor{
 static Sensor_gps sensor;
 
 
-
+void Sensor_gps::set_config(device_config_device_t& specific_device_config) {
+    specific_device_config.min_possition_change_mg_2_send = DEFAULT_MIN_POSSITION_CHANGE_MG_2_SEND;
+    specific_device_config.min_altitude_change_m_2_send = DEFAULT_MIN_ALTITUDE_CHANGE_M_2_SEND;
+}
 
 
 int Sensor_gps::wait_for_pos(size_t timeout_s, size_t satelites) {
@@ -139,35 +146,35 @@ void Sensor_gps::stop() {
 bool Sensor_gps::measure_intern() {
 
   ivGPS.checkUblox();
-  latitude_d  = 0.0000001 * ivGPS.getLatitude();
-  longitude_d = 0.0000001 * ivGPS.getLongitude();
-  altitude_m  = 0.001 * ivGPS.getAltitude();
+  possition.latitude_d  = 0.0000001 * ivGPS.getLatitude();
+  possition.longitude_d = 0.0000001 * ivGPS.getLongitude();
+  possition.altitude_m  = 0.001 * ivGPS.getAltitude();
   SIV = ivGPS.getSIV();
 
   //Debug output
   log_debug(F("Lat (degrees):  "));
-  log_debug_ln(latitude_d, 7);
+  log_debug_ln(possition.latitude_d, 7);
   log_debug(F("Long (degrees):  "));
-  log_debug_ln(longitude_d, 7);
+  log_debug_ln(possition.longitude_d, 7);
   log_debug(F("Alt (m):  "));
-  log_debug_ln(altitude_m);
+  log_debug_ln(possition.altitude_m);
   log_debug(F("SIV:  "));
   log_debug_ln(SIV);
 
   //Find if it a value has changed enough
   return (
-       true
+      (abs(possition.latitude_d  - possition.latitude_d)  >= device_config.device.min_possition_change_mg_2_send) ||
+      (abs(possition.longitude_d - possition.longitude_d) >= device_config.device.min_possition_change_mg_2_send) ||
+      (abs(possition.altitude_m  - possition.altitude_m)  >= device_config.device.min_altitude_change_m_2_send)
      );
 }
 
 void Sensor_gps::send(CayenneLPP& lpp) { 
   //Add measurements and remember last transmit
   if (SIV >= GPS_MIN_SATELITES) {
-      lpp.addGPS(SENSOR_GPS_POS_CHANNEL, latitude_d, longitude_d, altitude_m);
+      lpp.addGPS(SENSOR_GPS_POS_CHANNEL, possition.latitude_d, possition.longitude_d, possition.altitude_m);
   }
-  old_latitude_d = latitude_d;
-  old_longitude_d = longitude_d;
-  old_altitude_m = altitude_m;
+  old_possition = possition;
   lpp.addDigitalInput(SENSOR_GPS_SIV_CHANNEL, SIV);
   old_SIV = SIV;
 }

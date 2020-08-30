@@ -29,7 +29,7 @@ static Sensor_lidar sensor;
 
 #define DEFAULT_MIN_PERCENTAGE_DISTANCE_2_SEND 5;
 #define LIDAR_MAX_DISTANCE_DM 40.00
-#define DEFAULT_DISTANCE_OFFSET 100
+#define DEFAULT_DISTANCE_OFFSET 0
 
 void Sensor_lidar::set_config(device_config_device_t& specific_device_config) {
   specific_device_config.min_percentage_distance_2_send = DEFAULT_MIN_PERCENTAGE_DISTANCE_2_SEND;
