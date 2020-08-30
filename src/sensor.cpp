@@ -89,7 +89,7 @@ bool Sensors::measure(CayenneLPP& lpp){
 
     if (enough_change) {
         skippedMeasurements = 0; //Reset
-        log_debug_ln(F("Sending measurement"));
+        log_info_ln(F("Sending measurement"));
         log_flush();
         lpp.reset();
         lpp.addDigitalInput(SENSOR_VERSION_CHANNEL, device_config.version);
@@ -103,8 +103,8 @@ bool Sensors::measure(CayenneLPP& lpp){
             skippedMeasurements ++;
         }
 
-        log_debug(F("Skipped sending measurement: "));
-        log_debug_ln(skippedMeasurements);
+        log_info(F("Skipped sending measurement: "));
+        log_info_ln(skippedMeasurements);
         log_flush();
     }
 
