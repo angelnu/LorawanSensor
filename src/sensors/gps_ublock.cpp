@@ -132,7 +132,7 @@ void Sensor_gps::init(bool firstTime) {
     wait_for_pos(60);
   } else
   {
-    wait_for_pos(10);
+    wait_for_pos(30);
   }     
     
 }
@@ -173,8 +173,8 @@ void Sensor_gps::send(CayenneLPP& lpp) {
   //Add measurements and remember last transmit
   if (SIV >= GPS_MIN_SATELITES) {
       lpp.addGPS(SENSOR_GPS_POS_CHANNEL, possition.latitude_d, possition.longitude_d, possition.altitude_m);
+      old_possition = possition;
   }
-  old_possition = possition;
   lpp.addDigitalInput(SENSOR_GPS_SIV_CHANNEL, SIV);
   old_SIV = SIV;
 }
