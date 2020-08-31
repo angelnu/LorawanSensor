@@ -149,9 +149,9 @@ void Sensor_accelerometer::init(bool firstTime){
         assert(lis3dh_int1_gen_conf_set(&dev_ctx, &int1_cfg) == 0);
 
         /*
-        * Set device in HR mode
+        * Set device in LP mode
         */
-        assert(lis3dh_operating_mode_set(&dev_ctx, LIS3DH_HR_12bit) == 0);
+        assert(lis3dh_operating_mode_set(&dev_ctx, LIS3DH_LP_8bit) == 0);
 
         /*
         * Set Output Data Rate to 100 Hz
@@ -201,6 +201,9 @@ bool Sensor_accelerometer::measure_intern() {
     
     // Reset high pass filter
     assert(lis3dh_high_pass_on_outputs_set(&dev_ctx, PROPERTY_DISABLE) == 0);
+
+    //Set device in HR mode
+    assert(lis3dh_operating_mode_set(&dev_ctx, LIS3DH_LP_8bit) == 0);  
    
     /* Read accelerometer data to ensure filtered value is removed*/
     uint16_t data_raw_acceleration[3] = {0};
@@ -225,7 +228,9 @@ bool Sensor_accelerometer::measure_intern() {
     log_debug("  Z: "); log_debug(acceleration.z);
     log_debug_ln("  g");
 
-    /*
+    //Set device in HR mode
+    assert(lis3dh_operating_mode_set(&dev_ctx, LIS3DH_LP_8bit) == 0);  
+   /*
     * Enable HP filter for wake-up event detection
     *
     * Use this setting to remove gravity on data output
