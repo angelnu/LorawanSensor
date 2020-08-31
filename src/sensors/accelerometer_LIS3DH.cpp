@@ -174,7 +174,7 @@ bool Sensor_accelerometer::measure_intern() {
     if (src.xh || src.yh || src.zh)
     {
 
-        //Moving
+        // Moving
         is_moving = true;
 
         log_info("Movement detected:");
@@ -183,10 +183,10 @@ bool Sensor_accelerometer::measure_intern() {
         log_info("\tZ: "); log_info(src.zh);
         log_info_ln("");
 
-        //Enter fast mode
+        // Enter fast mode
         fast_sleep(TX_FAST_INTERVAL_S * 1000);
 
-        //Dissable interrupt to avoid waking up between
+        // Dissable interrupt to avoid waking up between
         detachInterrupt(digitalPinToInterrupt(PIN_ACCEL_INT1));
         
         // Disable AOI1 on int1 pin
@@ -199,10 +199,10 @@ bool Sensor_accelerometer::measure_intern() {
         
         
     } else {
-        //no move - do not enable fast sleep
+        // no move - do not enable fast sleep
         is_moving = false;
 
-        //Enable interrupt
+        // Enable interrupt
         attachInterrupt(digitalPinToInterrupt(PIN_ACCEL_INT1), Sensor_accelerometer_interrupt, RISING);
         
         // Enable AOI1 on int1 pin
@@ -217,22 +217,25 @@ bool Sensor_accelerometer::measure_intern() {
     // Reset high pass filter
     assert(lis3dh_high_pass_on_outputs_set(&dev_ctx, PROPERTY_DISABLE) == 0);
 
-    //Set device in HR mode
+    // Set device in HR mode
     assert(lis3dh_operating_mode_set(&dev_ctx, LIS3DH_LP_8bit) == 0);  
    
-    /* Read accelerometer data to ensure filtered value is removed*/
+    // Dummy read to force the HP filter to current acceleration value.
+    uint8_t dummy;
+    assert(lis3dh_filter_reference_get(&dev_ctx, &dummy) == 0);
+
+    // Read accelerometer data to ensure filtered value is removed
     uint16_t data_raw_acceleration[3] = {0};
     assert(lis3dh_acceleration_raw_get(&dev_ctx, (uint8_t*)data_raw_acceleration) == 0);
-    
 
-     /* Read output until new value available */
+    // Read output until new value available
     uint8_t data_ready=0;
     while(!data_ready) assert(lis3dh_xl_data_ready_get(&dev_ctx, &data_ready) == 0);
     
     /* Read accelerometer data - this time not filtered */
     assert(lis3dh_acceleration_raw_get(&dev_ctx, (uint8_t*)data_raw_acceleration) == 0);
 
-    // Covert data to g
+    // Convert data to g
     acceleration.x = lis3dh_from_fs2_hr_to_mg(data_raw_acceleration[0])/1000;
     acceleration.y = lis3dh_from_fs2_hr_to_mg(data_raw_acceleration[1])/1000;
     acceleration.z = lis3dh_from_fs2_hr_to_mg(data_raw_acceleration[2])/1000;
@@ -243,7 +246,7 @@ bool Sensor_accelerometer::measure_intern() {
     log_debug("  Z: "); log_debug(acceleration.z);
     log_debug_ln("  g");
 
-    //Set device in HR mode
+    // Set device in HR mode
     assert(lis3dh_operating_mode_set(&dev_ctx, LIS3DH_LP_8bit) == 0);  
    /*
     * Enable HP filter for wake-up event detection
@@ -252,10 +255,10 @@ bool Sensor_accelerometer::measure_intern() {
     */
     assert(lis3dh_high_pass_on_outputs_set(&dev_ctx, PROPERTY_ENABLE) == 0);
 
-    //Reset interrupt by reading the regiter
+    // Reset interrupt by reading the regiter
     while (src.xh || src.yh || src.zh) assert(lis3dh_int1_gen_source_get(&dev_ctx, &src) == 0);
 
-    //Find if it a value has changed enough
+    // Find if it a value has changed enough
     return (
       (old_is_moving != is_moving) ||
       ( !is_moving && (
