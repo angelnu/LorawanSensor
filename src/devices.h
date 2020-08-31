@@ -78,7 +78,7 @@
     #endif
     //Send each 10 minutes (movement)
     #ifndef TX_FAST_INTERVAL
-        #define TX_FAST_INTERVAL 600
+        #define TX_FAST_INTERVAL_S 600
     #endif
 #else
     #error "Unkown device type"

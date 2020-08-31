@@ -184,7 +184,7 @@ bool Sensor_accelerometer::measure_intern() {
         log_debug_ln("");
 
         //Enter fast mode
-        fast_sleep(TX_FAST_INTERVAL);
+        fast_sleep(TX_FAST_INTERVAL_S * 1000);
 
         //Dissable interrupt to avoid waking up between
         detachInterrupt(digitalPinToInterrupt(PIN_ACCEL_INT1));
