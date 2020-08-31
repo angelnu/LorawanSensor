@@ -177,11 +177,11 @@ bool Sensor_accelerometer::measure_intern() {
         //Moving
         is_moving = true;
 
-        log_debug("Movement detected:");
-        log_debug("\tX: "); log_debug(src.xh);
-        log_debug("\tY: "); log_debug(src.yh);
-        log_debug("\tZ: "); log_debug(src.zh);
-        log_debug_ln("");
+        log_info("Movement detected:");
+        log_info("\tX: "); log_info(src.xh);
+        log_info("\tY: "); log_info(src.yh);
+        log_info("\tZ: "); log_info(src.zh);
+        log_info_ln("");
 
         //Enter fast mode
         fast_sleep(TX_FAST_INTERVAL_S * 1000);
@@ -189,12 +189,27 @@ bool Sensor_accelerometer::measure_intern() {
         //Dissable interrupt to avoid waking up between
         detachInterrupt(digitalPinToInterrupt(PIN_ACCEL_INT1));
         
+        // Disable AOI1 on int1 pin
+        // NOTE: without this the CPU wakes up even if we disabled the interrupt and afterwards consumption is 400 uA
+        lis3dh_ctrl_reg3_t ctrl_reg3;
+        assert(lis3dh_pin_int1_config_get(&dev_ctx, &ctrl_reg3) == 0);
+        ctrl_reg3.i1_ia1 = PROPERTY_DISABLE;
+        assert(lis3dh_pin_int1_config_set(&dev_ctx, &ctrl_reg3) == 0);
+
+        
+        
     } else {
         //no move - do not enable fast sleep
         is_moving = false;
 
         //Enable interrupt
-        attachInterrupt(digitalPinToInterrupt(PIN_ACCEL_INT1), Sensor_accelerometer_interrupt, CHANGE);
+        attachInterrupt(digitalPinToInterrupt(PIN_ACCEL_INT1), Sensor_accelerometer_interrupt, RISING);
+        
+        // Enable AOI1 on int1 pin
+        lis3dh_ctrl_reg3_t ctrl_reg3;
+        assert(lis3dh_pin_int1_config_get(&dev_ctx, &ctrl_reg3) == 0);
+        ctrl_reg3.i1_ia1 = PROPERTY_ENABLE;
+        assert(lis3dh_pin_int1_config_set(&dev_ctx, &ctrl_reg3) == 0);
     }
 
     log_debug("Is moving: ");log_debug_ln(is_moving);
@@ -238,7 +253,7 @@ bool Sensor_accelerometer::measure_intern() {
     assert(lis3dh_high_pass_on_outputs_set(&dev_ctx, PROPERTY_ENABLE) == 0);
 
     //Reset interrupt by reading the regiter
-    assert(lis3dh_int1_gen_source_get(&dev_ctx, &src) == 0);
+    while (src.xh || src.yh || src.zh) assert(lis3dh_int1_gen_source_get(&dev_ctx, &src) == 0);
 
     //Find if it a value has changed enough
     return (
