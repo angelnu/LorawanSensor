@@ -261,11 +261,9 @@ bool Sensor_accelerometer::measure_intern() {
     // Find if it a value has changed enough
     return (
       (old_is_moving != is_moving) ||
-      ( !is_moving && (
-        (abs(acceleration.x - old_acceleration.x) >= device_config.device.min_acceleration_dg_2_send) ||
-        (abs(acceleration.y - old_acceleration.y) >= device_config.device.min_acceleration_dg_2_send) ||
-        (abs(acceleration.z - old_acceleration.z) >= device_config.device.min_acceleration_dg_2_send)
-      ))
+      (abs(acceleration.x - old_acceleration.x) >= device_config.device.min_acceleration_dg_2_send) ||
+      (abs(acceleration.y - old_acceleration.y) >= device_config.device.min_acceleration_dg_2_send) ||
+      (abs(acceleration.z - old_acceleration.z) >= device_config.device.min_acceleration_dg_2_send)
     );
 
 }
