@@ -157,7 +157,7 @@ void loop_periodically(uint32_t ms, void (&loop_work)()){
   unsigned long timeAfterSending = millis();
 
   // go to sleep
-  if ((!is_skip_sleep()) && next_loop_time_ms > (timeAfterSending - timeBeforeSending)) {
+  if (next_loop_time_ms > (timeAfterSending - timeBeforeSending)) {
     do_sleep(next_loop_time_ms - (timeAfterSending - timeBeforeSending));  // sleep minus elapsed time
   } else {
     if (is_skip_sleep()) {
