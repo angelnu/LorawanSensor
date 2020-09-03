@@ -71,7 +71,7 @@ void Sensor_lidar::stop(){
 
 
 bool Sensor_lidar::measure_intern() {
-  return false;
+  
   while (!ivLidar.checkForDataReady())
   {
     delay(1);
