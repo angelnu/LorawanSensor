@@ -35,7 +35,7 @@
         int16_t distance_offset;
     };
     #define SENSOR_LIDAR_VL53L1X_SPARFUNK
-    #define SENSOR_LIDAR_VL53L1X_SHORT
+    //#define SENSOR_LIDAR_VL53L1X_SHORT
     //#define SENSOR_LIDAR_VL53L1X_MEDIUM
 #elif defined(SENSOR_GENERIC_DOOR_SMT32)
     #define DEVICE_CONFIG_VERSION 1
