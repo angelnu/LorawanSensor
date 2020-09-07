@@ -18,7 +18,7 @@ void loop_periodically(uint32_t ms, void (&loop_work)());
 // - reset back to default sleep time at the begining of loop
 // - if several calls are done the smallest one is used
 void fast_sleep(uint32_t ms);
-bool is_fast_sleep();
+bool is_fast_sleep(); //Also return true if it woke up ahead of time (interrupt)
 uint32_t next_sleep_time();
 
 //Skip next sleep if more work is needed
