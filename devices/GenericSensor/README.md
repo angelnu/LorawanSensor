@@ -97,16 +97,18 @@ This sensor tracks the state (open/closed) of up to 4 doors or windows. It suppo
   - deep sleep: 2 uA + (0.3 * number_of_sensors)
   - battery: 300 mAh
   - theoretical batery live (no auto-discharge): 23 years
-- PINs (using PCB v1): each sensor needs a big (10 MOhm resistor) pull-up
+- PINs (using PCB v1): each sensor needs a big (10 MOhm resistor) pull-up.
   - VCC  -> pull-up resistors
-  - PB7  -> pull-up resistor and door 1 reed switch
-  - PB6  -> pull-up resistor and door 1 reset reed switch
-  - PB5  -> pull-up resistor and door 2 reed switch (need to uncomment in `platformio.ini`)
-  - PB4  -> pull-up resistor and door 2 reset reed switch (need to uncomment in `platformio.ini`)
-  - PB3  -> pull-up resistor and door 3 reed switch (need to uncomment in `platformio.ini`)
-  - PA15 -> pull-up resistor and door 4 reset reed switch (need to uncomment in `platformio.ini`)
-  - PA0  -> pull-up resistor and door 4 reed switch (need to uncomment in `platformio.ini`)
-  - PA4  -> pull-up resistor and door 4 reset reed switch (need to uncomment in `platformio.ini`)
+  - PB7  -> cannot be used for interrupts - conflicts with MOSI
+  - PB6  -> cannot be used for interrupts - conflicts with MISO
+  - PB5  -> pull-up resistor (RB5) and door 1 reed switch
+  - PB4  -> pull-up resistor (RB4) and door 1 reset reed switch
+  - PB3  -> pull-up resistor (RB3) and door 2 reed switch
+  - PA15 -> pull-up resistor (RA15) and door 2 reset reed switch
+  - PA0  -> pull-up resistor (external) and door 3 reed switch (need to uncomment in `platformio.ini`)
+  - PA1  -> pull-up resistor (external) and door 3 reset reed switch (need to uncomment in `platformio.ini`)
+  - PA8  -> pull-up resistor (external) and door 4 reed switch (need to uncomment in `platformio.ini`)
+  - PA9  -> pull-up resistor (external) and door 4 reset reed switch (need to uncomment in `platformio.ini`)
   - GND -> reed switches
 - PINs (using PCB v2) for 2 doors:
   - VCC: not used

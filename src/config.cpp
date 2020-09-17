@@ -39,6 +39,7 @@ void init_device_config(bool reset) {
     {
         device_config_new.version_config = DEVICE_CONFIG_VERSION;
         device_config_new.version = DEVICE_VERSION;
+        device_config.is_debug = bool(DEBUG);
         device_config_new.measure_interval_s = TX_INTERVAL;
         device_config_new.measure_average = DEFAULT_AVERAGE_MEASUREMENTS;
         device_config_new.max_skiped_measurements = DEFAULT_MAX_SKIPED_MEASUREMENTS;

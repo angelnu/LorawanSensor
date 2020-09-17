@@ -8,6 +8,8 @@
 #include "STM32LowPower.h"
 #endif
 
+static const auto SLEEP_ERROR_MS=1000;
+
 void sleep_setup() {
   
 #if defined(ARDUINO_ARCH_STM32)
@@ -141,30 +143,51 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
 
 }
 
-bool __skip_sleep=false;
-void skip_sleep() { __skip_sleep = true;}
-bool is_skip_sleep() { return __skip_sleep;};
-void reset_skip_sleep() { __skip_sleep = false;}
-
+static uint32_t requested_loop_time_ms;
+static uint32_t next_loop_time_ms;
+static bool wokeup_early = false;
 void loop_periodically(uint32_t ms, void (&loop_work)()){
 
   //Time before work
-  unsigned long timeBeforeSending = millis();
+  unsigned long timeBeforeWork = millis();
+
+  //By default sleep requested time at least changed with fast_sleep()
+  requested_loop_time_ms = next_loop_time_ms = ms;
 
   loop_work();
 
   //Time after work
-  unsigned long timeAfterSending = millis();
+  unsigned long timeAfterWork = millis();
 
   // go to sleep
-  if ((!is_skip_sleep()) && ms > (timeAfterSending - timeBeforeSending)) {
-    do_sleep(ms - (timeAfterSending - timeBeforeSending));  // sleep minus elapsed time
+  wokeup_early = false;
+  if (next_loop_time_ms > (timeAfterWork - timeBeforeWork)) {
+    unsigned long neto_sleep_time= next_loop_time_ms - (timeAfterWork - timeBeforeWork);
+    do_sleep(neto_sleep_time);  // sleep minus elapsed time
+    unsigned long timeAfterSleep = millis();
+    wokeup_early = ((timeAfterSleep - timeAfterWork) < (neto_sleep_time + SLEEP_ERROR_MS));
   } else {
     if (is_skip_sleep()) {
       log_debug_ln(F("Skipped sleep by request"));
-      reset_skip_sleep();
     } else {
       log_warning_ln(F("Long loop -> skipped sleep"));
     }
   }
 };
+
+void fast_sleep(uint32_t ms) {
+  //Keep smallest
+  if  (ms < next_loop_time_ms) next_loop_time_ms = ms;
+}
+bool is_fast_sleep() {
+  return wokeup_early || (requested_loop_time_ms != next_loop_time_ms);
+}
+uint32_t next_sleep_time() {
+  return next_loop_time_ms;
+}
+void skip_sleep() {
+  fast_sleep(0);
+}
+bool is_skip_sleep() {
+  return (next_sleep_time() == 0);
+}

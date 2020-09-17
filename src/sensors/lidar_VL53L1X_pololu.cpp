@@ -60,7 +60,7 @@ void Sensor_lidar::init(bool firstTime){
 
 }
 void Sensor_lidar::stop(){
-    digitalWrite(PIN_LIDAR_POWER, LOW);
+    pinMode(PIN_LIDAR_POWER, INPUT_PULLDOWN);
 }
 
 

@@ -10,7 +10,9 @@
 void setup() {
 
     #ifdef DEBUG_DURING_SLEEP
-      HAL_DBGMCU_EnableDBGStopMode();
+        HAL_DBGMCU_EnableDBGStopMode();
+    #elif defined(NO_DEBUG_DURING_SLEEP)
+        HAL_DBGMCU_DisableDBGStopMode();
     #endif
 
     sleep_setup();

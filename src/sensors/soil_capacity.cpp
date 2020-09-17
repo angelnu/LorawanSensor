@@ -49,8 +49,8 @@ void Sensor_soil::init(bool firstTime){
 
 bool Sensor_soil::measure_intern() {
   
-  float soilRaw = mySensor_ptr->capacitiveSensorRaw(device_config.measure_average);
-  soil_p = (100.0 * (soilRaw - device_config.device.min_s)) / (device_config.device.max_s * device_config.measure_average);
+  float soilRaw = 1.0 * mySensor_ptr->capacitiveSensorRaw(device_config.measure_average) / device_config.measure_average;
+  soil_p = 100.0 * (soilRaw - device_config.device.min_s) / device_config.device.max_s;
   if (soil_p > 100)
     soil_p = 100;
 
