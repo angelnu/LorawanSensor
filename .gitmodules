@@ -1,0 +1,3 @@
+[submodule "extra_libs/STMems_Standard_C_drivers"]
+	path = extra_libs/STMems_Standard_C_drivers
+	url = https://github.com/STMicroelectronics/STMems_Standard_C_drivers.git
