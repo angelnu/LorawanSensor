@@ -1,4 +1,4 @@
-#include "arduino.h"
+#include "Arduino.h"
 
 #if defined(SENSOR_SOIL_AVR)
     #define DEVICE_CONFIG_VERSION 1

@@ -1,4 +1,4 @@
-#include <arduino.h>
+#include <Arduino.h>
 #if defined(STM32L4xx)
 void SystemClock_Config(void)
 {

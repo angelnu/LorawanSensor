@@ -3,7 +3,7 @@
 
 #include "sensor.h"
 #include "sleep.h"
-#include "arduino.h"
+#include "Arduino.h"
 class Sensor_soil: Sensor{
     private:
         void set_config(device_config_device_t& specific_device_config) override;

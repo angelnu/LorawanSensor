@@ -1,6 +1,6 @@
 #include "config.h"
 #include "sleep.h"
-#include "arduino.h"
+#include "Arduino.h"
 #include <lmic.h>
 #include <SPI.h>
 #include <hal/hal.h>

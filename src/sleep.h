@@ -1,7 +1,7 @@
 #ifndef sleep_h
 #define sleep_h
 
-#include "arduino.h"
+#include "Arduino.h"
 
 const size_t SLEEP_MODE_DEEPSLEEP = 0;
 const size_t SLEEP_MODE_DEEPSLEEP_WITH_AC = 1;

@@ -1,7 +1,7 @@
 #ifndef config_h
 #define config_h
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "devices.h"
 
 //Device config
