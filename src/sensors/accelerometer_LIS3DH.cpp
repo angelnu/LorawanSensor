@@ -225,15 +225,15 @@ bool Sensor_accelerometer::measure_intern() {
     assert(lis3dh_filter_reference_get(&dev_ctx, &dummy) == 0);
 
     // Read accelerometer data to ensure filtered value is removed
-    uint16_t data_raw_acceleration[3] = {0};
-    assert(lis3dh_acceleration_raw_get(&dev_ctx, (uint8_t*)data_raw_acceleration) == 0);
+    int16_t data_raw_acceleration[3] = {0};
+    assert(lis3dh_acceleration_raw_get(&dev_ctx, data_raw_acceleration) == 0);
 
     // Read output until new value available
     uint8_t data_ready=0;
     while(!data_ready) assert(lis3dh_xl_data_ready_get(&dev_ctx, &data_ready) == 0);
     
     /* Read accelerometer data - this time not filtered */
-    assert(lis3dh_acceleration_raw_get(&dev_ctx, (uint8_t*)data_raw_acceleration) == 0);
+    assert(lis3dh_acceleration_raw_get(&dev_ctx, data_raw_acceleration) == 0);
 
     // Convert data to g
     acceleration.x = lis3dh_from_fs2_hr_to_mg(data_raw_acceleration[0])/1000;
