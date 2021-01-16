@@ -16,7 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      submodules: true
+      with:
+        submodules: true
 
     - name: Cache pip
       uses: actions/cache@v2
@@ -39,6 +40,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install --upgrade platformio
-        
+
     - name: Run PlatformIO
       run: pio run
