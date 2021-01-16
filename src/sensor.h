@@ -4,7 +4,7 @@
 #include <CayenneLPP.h>
 #ifdef SENSOR_SOIL_AVR
 namespace std {
-    #include "vector.h"
+    #include "Vector.h"
     template<class T> using vector = Vector<T>;
 }
 #else
