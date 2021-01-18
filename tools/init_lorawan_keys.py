@@ -143,17 +143,22 @@ class lorawan_device:
 
         new_page_data = old_page_data[0:offset_in_page] + data + old_page_data[offset_in_page+len(data):]
 
-        with tempfile.NamedTemporaryFile(suffix=".bin") as fp:
-            fp.write(new_page_data)
-            fp.flush()
-            WRITE_DATA_CMD = PROGRAMMER + " -e " + str(page_index) + " -w "+fp.name+" "+hex(start_page)
-            print(WRITE_DATA_CMD, flush=True)
-            
-            try:
-                read_uid_output = subprocess.check_output(WRITE_DATA_CMD.split(" "),universal_newlines=True)
-            except subprocess.CalledProcessError as e:
-                print("ERROR3: \n"+e.output)
-                sys.exit(-3)
+        fp = tempfile.NamedTemporaryFile(delete=False, suffix=".bin")
+        try:
+            with fp:
+                fp.write(new_page_data)
+                fp.flush()
+                WRITE_DATA_CMD = PROGRAMMER + " -e " + str(page_index) + ' -w "'+fp.name+'" '+hex(start_page)
+                print(WRITE_DATA_CMD, flush=True)
+                
+                try:
+                    read_uid_output = subprocess.check_output(WRITE_DATA_CMD.split(" "),universal_newlines=True)
+                except subprocess.CalledProcessError as e:
+                    print("ERROR3: \n"+e.output)
+                    sys.exit(-3)
+        finally:
+            os.unlink(fp.name)
+
 
     def write_eeprom(self, address, data):
 
