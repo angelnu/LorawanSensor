@@ -12,6 +12,8 @@ The sensor can work on a CR123 battery for 20 years (self-discharge of the batte
 
 For each new detected device it generates unique LoraWan keys and upload them to flash. This way the same firmware can be used for multiple instances of the same board.
 
+** NOTE **: Do not put the config directory in a public repository. Instead save as extra home/private repository so you have versioning while keeping your keys private!
+
 Download commands might be used to query or modify the configuration. See the commands section bellow.
 
 ## Bill of Materials
