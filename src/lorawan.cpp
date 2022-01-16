@@ -57,8 +57,16 @@ const lmic_pinmap lmic_pins = {
   .rst = PIN_LORAWAN_RST,
   .dio = {PIN_LORAWAN_DIO0, PIN_LORAWAN_DIO1, PIN_LORAWAN_DIO2} //
 };
+
+static void printHex2(unsigned v) {
+    v &= 0xff;
+    if (v < 16)
+        log_debug('0');
+    log_debug(v, HEX);
+}
+
 /* **************************************************************
- * send the message
+ * setup
  * *************************************************************/
 void lorawan_setup() {
 
@@ -140,10 +148,13 @@ void lorawan_setup() {
 
   #else //OTAA by default
 
-    LMIC_setLinkCheckMode(USE_ADR);
+    //It is automatically enabled and it can onky be set after JOIN
+    //LMIC_setLinkCheckMode(USE_ADR);
+    
     LMIC_setAdrMode(USE_ADR);
 
-    LMIC_startJoining();
+    //Will joing on first message
+    //LMIC_startJoining();
   #endif
 }
 
@@ -171,6 +182,8 @@ void os_sleep(uint32_t maxPeriod = 60000) {
     log_debug(millis());
     log_debug(F(" - "));
     log_debug_ln(sleepPeriod);
+    printHex2(LMIC.opmode);
+    log_debug_ln(F("<- LMIC.opmode"));
     log_flush();
 
 
@@ -250,8 +263,15 @@ void lorawan_process_command() {
     break;
   
   default:
-    log_error(F("Unknown command: "));
-    log_debug_ln(command);
+    log_error(F("Unknown command (port ): "));
+    log_error(port);
+    log_error(F(" ): "));
+    log_error_ln(command);
+    for (size_t i=0; i<data_len; ++i) {
+      if (i != 0)
+        log_error("-");
+      printHex2(data_ptr[i]);
+    }
   }
 
   log_info(millis());
@@ -273,15 +293,20 @@ void lorawan_send(uint8_t* data, u1_t dlen, uint8_t port) {
 
 
   // Check if there is not a current TX/RX job running
-  if (LMIC.opmode & OP_TXRXPEND) {
+  if (LMIC.opmode & OP_POLL) {
+    log_warning(F("OP_POLL, not sending"));
+  } else if (LMIC.opmode & OP_JOINING) {
+    log_warning(F("OP_JOINING, not sending"));
+  } else if (LMIC.opmode & OP_TXRXPEND) {
     log_warning(F("OP_TXRXPEND, not sending"));
+  } else if (LMIC.opmode & OP_TXDATA) {
+    log_warning(F("OP_TXDATA, not sending"));
   } else {
     // Prepare upstream data transmission at the next possible time.
     lmic_tx_error_t err = LMIC_setTxData2(port, (xref2u1_t) data, dlen, 0);
     if (err) {
       log_error(F("ERROR sending: "));
       log_error_ln(err);
-      return;
     }
   }
 
@@ -290,7 +315,7 @@ void lorawan_send(uint8_t* data, u1_t dlen, uint8_t port) {
   log_debug(F(" Waiting.. "));
 
 
-  while ( (LMIC.opmode & OP_JOINING) or (LMIC.opmode & OP_TXDATA) or (LMIC.opmode & OP_TXRXPEND) ) {
+  while ( LMIC.opmode & (OP_POLL | OP_TXDATA | OP_JOINING | OP_TXRXPEND)) {
     os_sleep();
     os_runloop_once();
     //HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
@@ -333,16 +358,9 @@ void lorawan_resume() {
 /* **************************************************************
  * Print event for debug
  * *************************************************************/
-#if DEBUG
+#if ! DEBUG
   static void printEvent(ev_t ev) {};
 #else
-  static void printHex2(unsigned v) {
-      v &= 0xff;
-      if (v < 16)
-          log_debug('0');
-      log_debug(v, HEX);
-  }
-
   static void printEvent(ev_t ev) {
       log_debug(millis());
       log_debug(": ");

@@ -23,7 +23,7 @@ class Sensor_door: Sensor{
         uint32_t iv_pin_door_reset;
 
         bool door_open;
-        bool old_door_open=false;
+        bool sent_door_open=false;
 
         static void pin_interrupt_handler();
         bool get_door_open();
@@ -81,12 +81,12 @@ bool Sensor_door::measure_intern() {
     //Read sensors
     door_open = get_door_open();
 
-    return (door_open != old_door_open);
+    return (door_open != sent_door_open);
 }
 
 void Sensor_door::send(CayenneLPP& lpp) { 
   lpp.addDigitalInput(iv_lpp_channel, door_open);
-  old_door_open = door_open;
+  sent_door_open = door_open;
 }
 
 void Sensor_door::pin_interrupt_handler() {
@@ -102,7 +102,7 @@ bool Sensor_door::get_door_open() {
         } else {
             //If door was open previously then keep that status until reset
             log_debug_ln("Door persistance");
-            return old_door_open || digitalRead(iv_pin_door);
+            return door_open || digitalRead(iv_pin_door);
         }
     } else {
         //Just return current door status

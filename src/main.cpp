@@ -19,19 +19,18 @@ void setup() {
     Serial.begin(serialPortSpeed);
     
     #ifdef IWDG_TIME_S
-      if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)) {
-        __HAL_RCC_CLEAR_RESET_FLAGS();
+      if (IWatchdog.isReset(/* clear */ true)) {
         log_info_ln(F("Reset from watchdog -> sleeping"));
-      #ifdef PIN_STATUS_LED
-        //Blink error
-        pinMode(PIN_STATUS_LED, OUTPUT);
-        for (size_t i=0;i<5;i++) {
-          digitalWrite(PIN_STATUS_LED, HIGH);
-          delay(200);
-          digitalWrite(PIN_STATUS_LED, LOW);
-          delay(200);
-        }
-      #endif
+        #ifdef PIN_STATUS_LED
+          //Blink error
+          pinMode(PIN_STATUS_LED, OUTPUT);
+          for (size_t i=0;i<5;i++) {
+            digitalWrite(PIN_STATUS_LED, HIGH);
+            delay(200);
+            digitalWrite(PIN_STATUS_LED, LOW);
+            delay(200);
+          }
+        #endif
         log_flush();
         do_sleep(PAUSE_SECONDS_AFTER_WATCHDOG * 1000);
       }

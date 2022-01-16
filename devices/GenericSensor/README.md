@@ -22,6 +22,7 @@ Since v2 is backwards compatible there is no need to use v1 anymore.
 This verssion is backwards compatible (same posssitions for all components, even the v1 stencil might be used) but adds support for additional pull-ups or pull-downs. Check the schematic bellow to understand the options: there are two sets of solder jumpers that allow pull-up or pull-down selection. Also using 0R you can enable additional 3V and GND outputs.
 
 - [Aisler PCB project](https://aisler.net/p/LVXPWPMZ)
+- [PCB STEP model](KiCad/GenericSensor_v2.step)
 - [SoilSensor.sch](KiCad/GenericSensor_v2.sch)
   - ![Schematics Preview](pictures/GenericSensor_v2_schematics.png)
 - [SoilSensor.kicad_pcb](KiCad/GenericSensor_v2.kicad_pcb)
@@ -125,6 +126,7 @@ This sensor tracks the state (open/closed) of up to 4 doors or windows. It suppo
   - `pio run -t upload -e distance_v1` - PCB v2, STM32 L4
   - `pio run -t upload -e distance_v1_debug` - PCB v2, STM32 L4, debug
 - [3D Printed cage](cages/door):
+  - [Fusion 360 file](https://a360.co/3GygWqv)
   - ![Mounted Cage view 1](pictures/post-mode_DoorSensor_v1_mount1.jpg)
   - ![Mounted Sensor view 2](pictures/post-mode_DoorSensor_v1_mount2.jpg)
 - BUGS:

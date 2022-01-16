@@ -64,11 +64,11 @@ Keys for each detected device will be stored under `config/devices.ini`. Before 
 [global]
 appeui = <your app EUI>
 ```
-If you run without creating the file first then the programmer will create a dummy APPEUI which you will need to modify. You can keep the config folder into its own git repository. Please keep it private!
+If you run without creating the file first then the programmer will create a dummy APPEUI which you will need to modify. You can keep the config folder into its own git repository but please keep it private! On checkout you might use the [this script](checkout_keys_repo.sh) to check it out.
 
-For programming either use the platformio UI or any of the CLI commands proposed for te device.
+For programming either use the platformio UI or any of the CLI commands proposed for the device.
 
-If you connect a serial interface while booting you should should see the following:
+If you connect a serial interface while booting you should see the following:
 ```
 Settings unchanged
 DEVICE VERSION: 3
@@ -85,7 +85,7 @@ Starting
 
 ## Adding new devices
 
-1. Add a section to `platformio.ini` for your device. The key part is to have a dedicate `-D SENSOR_<PCB name>_<sensor name>_<MCU name>` (such as `-D SENSOR_GENERIC_DISTANCE_SMT32`) -> this will be needed in the next step.
+1. Add a section to `platformio.ini` for your device. The key part is to have a dedicated `-D SENSOR_<PCB name>_<sensor name>_<MCU name>` (such as `-D SENSOR_GENERIC_DISTANCE_SMT32`) -> this will be needed in the next step.
   - If you are just using the generic PCB then you can copy `Basic v1` and modify to your needs
   - If you are creating your own PCB based on the STM32 MCU then you can copy `Generic v1` and modify to your needs
   - If you use a different MCU then you will need to create your own target extending `base` and `base_debug`. Please notice that you will in this case have to add support for the new MCU in multiple areas of the code where the MCU is relevant: the code has been tested with STM32 (mainly) and atmega32.
