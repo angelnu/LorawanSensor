@@ -11,3 +11,4 @@ KiCad/*-cache.lib
 *.sch-bak
 devices/GenericSensor/KiCad/GenericSensor_v2-backups
 **/*.kicad*-bak
+**/fp-info-cache
