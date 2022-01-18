@@ -12,9 +12,10 @@ This verssion is backwards compatible (same posssitions for all components, even
 
 - [Aisler PCB project](https://aisler.net/p/LVXPWPMZ)
 - [PCB STEP model](KiCad/GenericSensor_v2.step)
-- [SoilSensor.sch](KiCad/GenericSensor_v2.sch)
-  - ![Schematics Preview](pictures/GenericSensor_v2_schematics.png)
-- [SoilSensor.kicad_pcb](KiCad/GenericSensor_v2.kicad_pcb)
+- [KiCad model](KiCad\GenericSensor_v2-backups/GenericSensor_v2.kicad_pro)
+- ![Schematics Preview](pictures/GenericSensor_v2_schematics.png)
+- ![PCB Top render](pictures/PCB_GenericSensor_v2_top.png)
+- ![PCB Bottom render](pictures/PCB_GenericSensor_v2_bottom.png)
 
 ### Generic Sensor v1
 
