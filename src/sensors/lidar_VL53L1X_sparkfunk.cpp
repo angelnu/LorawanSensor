@@ -3,11 +3,11 @@
 
 #include "sensor.h"
 #include <Wire.h>
-#include <ComponentObject.h>
-#include <RangeSensor.h>
+//#include <ComponentObject.h>
+//#include <RangeSensor.h>
 #include <SparkFun_VL53L1X.h>
-#include <vl53l1x_class.h>
-#include <vl53l1_error_codes.h>
+//#include <vl53l1x_class.h>
+//#include <vl53l1_error_codes.h>
 class Sensor_lidar: Sensor{
     private:
         void set_config(device_config_device_t& specific_device_config) override;
