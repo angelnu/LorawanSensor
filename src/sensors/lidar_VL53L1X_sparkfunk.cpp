@@ -30,6 +30,7 @@ static Sensor_lidar sensor;
 #define DEFAULT_MIN_PERCENTAGE_DISTANCE_2_SEND 5;
 #define LIDAR_MAX_DISTANCE_DM 40.00
 #define DEFAULT_DISTANCE_OFFSET 0
+#define MAX_INIT_MS 20
 
 void Sensor_lidar::set_config(device_config_device_t& specific_device_config) {
   specific_device_config.min_percentage_distance_2_send = DEFAULT_MIN_PERCENTAGE_DISTANCE_2_SEND;
@@ -44,14 +45,22 @@ void Sensor_lidar::init(bool firstTime){
 
   pinMode(PIN_LIDAR_POWER, OUTPUT);
   digitalWrite(PIN_LIDAR_POWER, HIGH);
-  delay(2);
 
-  if (ivLidar.begin() != 0)
-  {
-    log_debug_ln("Failed to init lidar VL53L1X!");
-    while (1);
+  uint8_t wait_left=MAX_INIT_MS;
+  while (ivLidar.begin() != 0)
+  {    
+    delay(1);
+    if (!wait_left--) {
+      log_error_ln("Failed to init lidar VL53L1X!");
+      while(1); //sleep for ever
+    }
   }
-  if (firstTime) log_debug_ln("Found lidar VL53L1X!");
+
+  if (firstTime) {
+    log_debug("Found lidar VL53L1X after (ms) ");
+    log_debug_ln(MAX_INIT_MS-wait_left);
+  }
+
   #if defined(SENSOR_LIDAR_VL53L1X_SHORT)
     ivLidar.setDistanceModeShort();
   #elif defined(SENSOR_LIDAR_VL53L1X_MEDIUM)
