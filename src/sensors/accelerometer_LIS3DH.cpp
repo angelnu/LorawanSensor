@@ -11,6 +11,8 @@ static const uint8_t LIS3DH_I2C_ADD = 0x19;
 static const uint8_t DEFAULT_MIN_ACCELERATION_DG_2_SEND=10; //1g
 
 class Sensor_accelerometer: Sensor{
+    public:
+        Sensor_accelerometer() : Sensor(__FILE__) {}
     private:
         void set_config(device_config_device_t& specific_device_config) override;
         void init (bool firstTime) override;

@@ -5,6 +5,8 @@
 #include <Wire.h>
 #include <VL53L1X.h>
 class Sensor_lidar: Sensor{
+    public:
+        Sensor_lidar() : Sensor(__FILE__) {}
     private:
         void set_config(device_config_device_t& specific_device_config) override;
         void init (bool firstTime) override;

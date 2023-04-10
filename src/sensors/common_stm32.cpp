@@ -2,6 +2,8 @@
 
 #include "sensor.h"
 class Common_stm32_sensor: Sensor{
+    public:
+        Common_stm32_sensor() : Sensor(__FILE__) {}
     private:
         void set_config(device_config_device_t& specific_device_config) override;
         bool measure_intern() override;
@@ -73,6 +75,10 @@ uint32_t Common_stm32_sensor::readVref()
 bool Common_stm32_sensor::measure_intern() {
   
   uint32_t VRef = readVref();
+  //Loop until the Vref is stable ( within 10 mv)
+  for (uint32_t new_VRef = readVref(); VRef/10 != new_VRef/10; new_VRef = readVref()) {
+    VRef = new_VRef;
+  }
   battery_v = 1.0 * VRef / 1000;
   temp_c = readTempSensor(VRef);
 

@@ -11,6 +11,8 @@ static const uint8_t DEFAULT_MIN_ALTITUDE_CHANGE_M_2_SEND=10;
 #include "SparkFun_Ublox_Arduino_Library.h" //http://librarymanager/All#SparkFun_Ublox_GPS
 #include "IWatchdog.h"
 class Sensor_gps: Sensor{
+    public:
+        Sensor_gps() : Sensor(__FILE__) {}
     private:
         void set_config(device_config_device_t& specific_device_config) override;
         void init (bool firstTime) override;

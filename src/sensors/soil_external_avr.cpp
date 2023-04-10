@@ -5,6 +5,8 @@
 #include "sleep.h"
 #include "Arduino.h"
 class Sensor_soil: Sensor{
+    public:
+        Sensor_soil() : Sensor(__FILE__) {}
     private:
         void set_config(device_config_device_t& specific_device_config) override;
         void init (bool firstTime) override;

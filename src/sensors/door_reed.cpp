@@ -6,7 +6,7 @@
 class Sensor_door: Sensor{
     public:
         Sensor_door(uint8_t lpp_channel, uint32_t pin_door, uint32_t pin_door_reset):
-            Sensor(),
+            Sensor(__FILE__),
             iv_lpp_channel(lpp_channel),
             iv_pin_door(pin_door),
             iv_pin_door_reset(pin_door_reset) {    

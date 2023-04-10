@@ -5,6 +5,8 @@
 #include <Adafruit_LIS3DH.h>
 #include "lis3dh_reg.h"
 class Sensor_accelerometer: Sensor{
+    public:
+        Sensor_accelerometer() : Sensor(__FILE__) {}
     private:
         void set_config(device_config_device_t& specific_device_config) override;
         void init (bool firstTime) override;

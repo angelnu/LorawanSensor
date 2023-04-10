@@ -35,9 +35,10 @@ class Sensors {
 
 class Sensor {
     public:
-        Sensor() :
+        Sensor(const char *name) :
             iv_firstTime_setup(true),
-            iv_ready(false){
+            iv_ready(false),
+            iv_name(name) {
                 Sensors::register_sensor(this);
             };
         ~Sensor(){ };
@@ -56,6 +57,8 @@ class Sensor {
         
         virtual void send(CayenneLPP& lpp) {};
 
+        const char* get_name() {return this->iv_name;}
+
         void sleep() {
             if (iv_ready) stop();
             iv_ready = false;
@@ -64,13 +67,14 @@ class Sensor {
     private:
         bool iv_firstTime_setup;
         bool iv_ready;
+        const char *iv_name;
 
         //Methods to override
         //Called after sleep or when the device starts
         virtual void init (bool firstTime) {};
         //Prepare data to send. Returns if the data is worth sensing (different enough)
         virtual bool measure_intern() {return false;};
-        //Prepare to ssleep
+        //Prepare to sleep
         virtual void stop () {};
 
     protected:

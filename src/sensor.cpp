@@ -73,9 +73,12 @@ bool Sensors::measure(CayenneLPP& lpp){
     //Read sensors
     bool enough_change = false;
     for (size_t i=0; i < sensor_pointers().size(); i++) {
-        //we use the + operator to ensure all functions are called 
-        //and avoid the "short circuit" of the OR operator
-        enough_change += sensor_pointers()[i]->measure();
+        if (sensor_pointers()[i]->measure()) {
+            enough_change = true;
+            log_info(sensor_pointers()[i]->get_name());
+            log_info_ln(F(" changed -> sending measurement"));
+            log_flush();
+        }
     }
 
     //Stop sensor
@@ -103,8 +106,8 @@ bool Sensors::measure(CayenneLPP& lpp){
             skippedMeasurements ++;
         }
 
-        log_info(F("Skipped sending measurement: "));
-        log_info_ln(skippedMeasurements);
+        log_debug(F("Skipped sending measurement: "));
+        log_debug_ln(skippedMeasurements);
         log_flush();
     }
 
