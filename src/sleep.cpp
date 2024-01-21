@@ -16,7 +16,7 @@ void sleep_setup() {
 
   STM32RTC& rtc = STM32RTC::getInstance();
   #ifdef LSE_CLOCK_ENABLED
-    log_debug_ln(F("Low Speed External clock source"));
+    log_info_ln(F("Low Speed External clock source"));
     rtc.setClockSource(STM32RTC::LSE_CLOCK);
   #else
     log_debug_ln(F("Default clock source"));
@@ -60,7 +60,7 @@ static void addMillis(unsigned long millis)
 void do_sleep(uint32_t sleepTime, size_t mode) {
 
   log_debug(F("Sleep for "));
-  log_debug(sleepTime);
+  log_warning(sleepTime);
   log_debug_ln(F(" mseconds"));
   log_flush();
 
@@ -96,16 +96,18 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
     addMillis(sleepTime);
   #elif ! defined(NO_DEEP_SLEEP) && defined(ARDUINO_ARCH_STM32)
 
-    STM32RTC& rtc = STM32RTC::getInstance();
-
     //SLEEP_MODE_DEEPSLEEP seems to be precise enough after reseting RTC epoch
-    //if (sleepTime > 500)
+    // if (sleepTime > 10000)
     //  mode = SLEEP_MODE_DEEPSLEEP;
+mode = 50;
+
     if (mode==SLEEP_MODE_DEEPSLEEP) {
 
+      STM32RTC& rtc = STM32RTC::getInstance();
+
       //Round the sleep time
-      //if (sleepTime % 1000) sleepTime+=1000;
-      //sleepTime = (sleepTime/1000)*1000;
+      if (sleepTime % 1000) sleepTime+=1000;
+      sleepTime = (sleepTime/1000)*1000;
 
       //remember start
       uint32_t start_ms=0;
@@ -120,21 +122,27 @@ void do_sleep(uint32_t sleepTime, size_t mode) {
       //log_flush();
       LowPower.deepSleep(sleepTime /* calibrated for STM32L04 */);
 
+      HAL_ResumeTick();
+      
       //remember start
       uint32_t end_ms=0;
       uint32_t endTime = rtc.getEpoch(&end_ms);
 
-      HAL_ResumeTick();
-      sleepTime = (endTime - startTime) * 1000 + endTime - startTime;
+      sleepTime = (endTime - startTime);
       
-      addMillis(sleepTime);
-      log_debug(F("Deep slept "));
-      log_debug_ln(sleepTime);
+      //addMillis(sleepTime);
+      log_warning(F("Deep slept "));
+      log_warning_ln(sleepTime);
+      
+      log_warning_ln("T");
     
     } else {
-      uint32_t start=millis();
-      while (millis() < start+sleepTime)
+      uint32_t start=HAL_GetTick();
+      while (HAL_GetTick() < start+sleepTime) {
         HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+      }
+      
+      log_warning_ln("P2");
     }
 
   #else
@@ -149,7 +157,7 @@ static bool wokeup_early = false;
 void loop_periodically(uint32_t ms, void (&loop_work)()){
 
   //Time before work
-  unsigned long timeBeforeWork = millis();
+  unsigned long timeBeforeWork = HAL_GetTick();
 
   //By default sleep requested time at least changed with fast_sleep()
   requested_loop_time_ms = next_loop_time_ms = ms;
@@ -157,15 +165,20 @@ void loop_periodically(uint32_t ms, void (&loop_work)()){
   loop_work();
 
   //Time after work
-  unsigned long timeAfterWork = millis();
+  unsigned long timeAfterWork = HAL_GetTick();
 
   // go to sleep
   wokeup_early = false;
   if (next_loop_time_ms > (timeAfterWork - timeBeforeWork)) {
     unsigned long neto_sleep_time= next_loop_time_ms - (timeAfterWork - timeBeforeWork);
     do_sleep(neto_sleep_time);  // sleep minus elapsed time
-    unsigned long timeAfterSleep = millis();
-    wokeup_early = ((timeAfterSleep - timeAfterWork) < (neto_sleep_time + SLEEP_ERROR_MS));
+    unsigned long timeAfterSleep = HAL_GetTick();
+    wokeup_early = ((timeAfterSleep - timeAfterWork) < (neto_sleep_time - SLEEP_ERROR_MS));
+    if (wokeup_early){
+      
+      log_warning(F("wokeup_early "));
+      log_warning_ln(timeAfterSleep - timeAfterWork);
+    }
   } else {
     if (is_skip_sleep()) {
       log_debug_ln(F("Skipped sleep by request"));

@@ -15,6 +15,8 @@ void setup() {
         HAL_DBGMCU_DisableDBGStopMode();
     #endif
 
+    SystemClock_Config();
+
     sleep_setup();
     Serial.begin(serialPortSpeed);
     
@@ -46,6 +48,13 @@ void setup() {
     init_device_config();
     print_buildinfo();
     
+    log_error("SystemCoreClock: ");
+    log_error_ln(SystemCoreClock);
+    log_error("F_CPU clock: ");
+    log_error_ln(F_CPU);
+    log_error("HSE_VALUE: ");
+    log_error_ln(HSE_VALUE);
+    
     Sensors::setup();
     #ifdef PIN_STATUS_LED
       pinMode(PIN_STATUS_LED, OUTPUT);
@@ -70,15 +79,18 @@ void loop_work() {
       IWatchdog.reload();
     #endif
     
-    lorawan_resume();
-    
     //Measure
     bool mustSend = Sensors::measure(lpp);
 
     // Start job (sending automatically starts OTAA too)
-    if (mustSend) lorawan_send(lpp.getBuffer(), lpp.getSize());
+    if (mustSend) {
+    
+      lorawan_resume();
 
-    lorawan_suspend();
+      lorawan_send(lpp.getBuffer(), lpp.getSize());
+
+      lorawan_suspend();
+    }
 
 }
 
