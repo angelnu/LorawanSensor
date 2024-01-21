@@ -258,29 +258,46 @@ class lorawan_device:
 
 ################################################
 
+def init_lorawan_keys(name, uid_addr=UID_ADDRESS_L4, eeprom_address=0, optionbytes={}):
 
-parser = argparse.ArgumentParser(description='Init stm32 lorawan device keys')
-parser.add_argument('--name', dest='name', default="noname",
-                   help='name to be added to '+DEVICES_LIST_FILE)
-parser.add_argument('--uid_address', dest='uid_address', default=str(UID_ADDRESS_L4),
-                   help='address in flash for UID')
-parser.add_argument('--eeprom_address', dest='eeprom_address', default=str(0),
-                   help='address in flash for UID')
-parser.add_argument('--optionbytes', dest='optionbytes', default={},
-                    action = type('', (argparse.Action, ), dict(__call__ = lambda a, p, n, v, o: getattr(n, a.dest).update(dict([v.split('=')])))),
-                    help='Optionbytes to set')
+    device = lorawan_device(name,
+                            uid_addr = uid_addr,
+                            eeprom_address = eeprom_address,
+                            optionbytes = optionbytes)
+    device.program()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Init stm32 lorawan device keys')
+    parser.add_argument('--name', dest='name', default="noname",
+                    help='name to be added to '+DEVICES_LIST_FILE)
+    parser.add_argument('--uid_address', dest='uid_address', default=str(UID_ADDRESS_L4),
+                    help='address in flash for UID')
+    parser.add_argument('--eeprom_address', dest='eeprom_address', default=str(0),
+                    help='address in flash for UID')
+    parser.add_argument('--optionbytes', dest='optionbytes', default={},
+                        action = type('', (argparse.Action, ), dict(__call__ = lambda a, p, n, v, o: getattr(n, a.dest).update(dict([v.split('=')])))),
+                        help='Optionbytes to set')
 
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-print("name: "+args.name)
-print("uid_address: "+args.uid_address)
-print("eeprom_address: "+args.eeprom_address)
-print("optionbytes: "+str(args.optionbytes))
+    print("name: "+args.name)
+    print("uid_address: "+args.uid_address)
+    print("eeprom_address: "+args.eeprom_address)
+    print("optionbytes: "+str(args.optionbytes))
 
-device = lorawan_device(args.name,
-                        uid_addr = int(args.uid_address, 16),
-                        eeprom_address = int(args.eeprom_address, 16),
-                        optionbytes = args.optionbytes)
-device.program()
-print ("Device Lorawan keys loaded")
+    init_lorawan_keys(args.name,
+                      uid_addr = int(args.uid_address, 16),
+                      eeprom_address = int(args.eeprom_address, 16),
+                      optionbytes = args.optionbytes)
+    
+    print ("Device Lorawan keys loaded")
+
+Import("env")
+
+def before_upload(source, target, env):
+    # TBD - hardcoded
+    init_lorawan_keys("distance_v1_debug", uid_addr=0x1FFF7590, optionbytes={"IWDG_STOP": "0x0"})
+
+env.AddPreAction("upload", before_upload)
+#env.AddPostAction("upload", after_upload)
